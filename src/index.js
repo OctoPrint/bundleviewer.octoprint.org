@@ -1,17 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+
+const search = window.location.search;
+const params = new URLSearchParams(search);
+
+//const url = "http://localhost:8000/octoprint-systeminfo-20210119184038.zip";
+//const url = "https://github.com/foosel/testing-stuff/files/5837673/octoprint-systeminfo-20210119184038.zip";
+const url = decodeURIComponent(params.get('url'));
+console.log("URL", url);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <App url={url} />,
+  document.querySelector('#root'),
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
