@@ -71,6 +71,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const githubRegex = /^https:\/\/github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/files\//
+
 export default function App(props) {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const [darkMode, setDarkMode] = useState(prefersDarkMode);
@@ -103,7 +105,13 @@ export default function App(props) {
 
     useEffect(() => {
       if (props.url) {
-        ziputils.loadRemoteZip(props.url)
+        let fetchUrl = props.url;
+        const match = fetchUrl.match(githubRegex);
+        if (match) {
+          fetchUrl = fetchUrl.replace("https://github.com", "https://bundleviewer.octoprint.org/bundles");
+        };
+        
+        ziputils.loadRemoteZip(fetchUrl)
           .then(zip => {
             const files = ["octoprint.log", "serial.log", "terminal.txt", "plugin_softwareupdate_console.log", "plugin_pluginmanager_console.log"];
 
@@ -161,7 +169,7 @@ export default function App(props) {
                             }}
                             onChange={handleUrlChange} 
                             onKeyDown={handleUrlEnter} 
-                            value={url}
+                            defaultValue={url}
                           />
                         </div>
                         <Switch checked={darkMode} onChange={handleThemeToggle} />
