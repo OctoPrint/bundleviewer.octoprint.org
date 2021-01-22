@@ -13,20 +13,20 @@ export default function LogView(props) {
             padding: 0,
             "font-family": "'JetBrains Mono', 'Droid Sans Mono', monospace",
         },
-        linenumber: {
-            display: "inline-block",
-            width: `${lineCount.toString().length}ch`,
-            "text-align": "right",
-            "margin-right": "1em",
-            "color": theme.palette.text.secondary
-        },
         line: {
-    
+            "&::before": {
+                content: "attr(data-linenumber)",
+                display: "inline-block",
+                width: `${lineCount.toString().length}ch`,
+                "text-align": "right",
+                "margin-right": "1em",
+                "color": theme.palette.text.secondary
+            }
         }
     }))();
 
     const Line = ({ index, style }) => (
-        <span style={style}><span className={classes.linenumber}>{index+1}</span><span className={classes.line}>{lines[index]}</span></span>
+        <span style={style}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
     )
 
     return (
