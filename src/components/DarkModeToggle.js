@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
-import Switch from "@material-ui/core/Switch";
-import BrightnessIcon from "@material-ui/icons/Brightness6";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+import DarkModeIcon from "@material-ui/icons/Brightness4";
+import LightModeIcon from "@material-ui/icons/Brightness7";
 
 export default function DarkModeToggle(props) {
     const [darkMode, setDarkMode] = useState(props.darkMode);
@@ -12,9 +14,10 @@ export default function DarkModeToggle(props) {
     };
 
     return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-            <BrightnessIcon />
-            <Switch checked={darkMode} onChange={handleDarkModeToggle} />
-        </div>
+        <Tooltip title="Toggle dark mode">
+            <IconButton onClick={handleDarkModeToggle} color="inherit" title="Toggle Dark Mode">
+                { darkMode ? <LightModeIcon /> : <DarkModeIcon /> }
+            </IconButton>
+        </Tooltip>
     )
 }
