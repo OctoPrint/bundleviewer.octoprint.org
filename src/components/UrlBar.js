@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 import InputBase from "@material-ui/core/InputBase";
+import Hidden from "@material-ui/core/Hidden";
 import LinkIcon from "@material-ui/icons/LinkOutlined";
 
 const useStyles = makeStyles(theme => ({
@@ -16,8 +17,10 @@ const useStyles = makeStyles(theme => ({
       "&:hover": {
         backgroundColor: fade(theme.palette.common.white, 0.25),
       },
-      marginRight: theme.spacing(2),
-      marginLeft: theme.spacing(2),
+      [theme.breakpoints.up('md')]: {
+        marginRight: theme.spacing(2),
+        marginLeft: theme.spacing(2),
+      },
       flexGrow: 1
     },
     urlIcon: {
@@ -34,8 +37,10 @@ const useStyles = makeStyles(theme => ({
       width: "100%"
     },
     inputInput: {
-      padding: theme.spacing(1, 1, 1, 0),
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+      padding: theme.spacing(1, 1, 1, 1),
+      [theme.breakpoints.up('md')]: {
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+      },
       transition: theme.transitions.create('width'),
       width: "100%",
     }
@@ -59,18 +64,20 @@ export default function UrlBar(props) {
 
     return (
         <div className={classes.url}>
-            <div className={classes.urlIcon}>
-            <LinkIcon />
-            </div>
+            <Hidden mdDown>
+                <div className={classes.urlIcon}>
+                    <LinkIcon />
+                </div>
+            </Hidden>
             <InputBase
-            placeholder="URL..."
-            classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-            }}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown} 
-            defaultValue={props.url}
+                placeholder="URL..."
+                classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                }}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown} 
+                defaultValue={props.url}
             />
         </div>
     )

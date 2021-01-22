@@ -8,6 +8,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Hidden from "@material-ui/core/Hidden";
+import GitHubIcon from "@material-ui/icons/GitHub";
 
 import { SnackbarProvider } from "notistack";
 
@@ -27,14 +30,42 @@ const useStyles = makeStyles(theme => ({
     grow: {
       flexGrow: 1
     },
+
+    appBar: {
+    },
+    toolbar: {
+      [theme.breakpoints.down('md')]: {
+        "justify-content": "flex-end",
+        "flex-wrap": "wrap",
+      }
+    },
+    urlbar: {
+      flexGrow: 1,
+      [theme.breakpoints.down('md')]: {
+        "flex-basis": "100%",
+        order: 99,
+        paddingBottom: theme.spacing(2)
+      },
+    },
+    title: {
+      "justify-item": "left",
+    },
+
     offset: theme.mixins.toolbar,
+
     content: {
       flexGrow: 1,
-      height: `calc(100vh + ${theme.mixins.toolbar}px)`,
-      overflow: "auto"
+      overflow: "auto",
+      "padding-top": theme.mixins.toolbar.minHeight,
+      [theme.breakpoints.down('md')]: {
+        "padding-top": theme.mixins.toolbar.minHeight * 2,
+      }
     },
     container: {
       paddingTop: theme.spacing(4),
+      [theme.breakpoints.down('md')]: {
+        paddingTop: 0,
+      },
       paddingBottom: theme.spacing(4)
     },
 }));
@@ -77,25 +108,40 @@ export default function App(props) {
       }
     }
 
+    const Navbar = () => {
+      return (
+        <AppBar className={classes.appBar}>
+          <Toolbar className={classes.toolbar}>
+              <Hidden>
+                <Typography variant="h6" noWrap className={classes.title}>
+                    OctoPrint Bundle Viewer
+                </Typography>
+              </Hidden>
+              <Hidden mdUp>
+                <div className={classes.grow} />
+              </Hidden>
+              <div className={classes.urlbar}>
+                <UrlBar url={url} handleUrlChange={handleUrlChange} />
+              </div>
+              <ShareButton url={url} />
+              <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
+              <Hidden xsDown>
+                <IconButton href="https://github.com/OctoPrint/bundleviewer.octoprint.org" target="_blank">
+                  <GitHubIcon />
+                </IconButton>
+              </Hidden>
+          </Toolbar>
+        </AppBar>
+      )
+    }
+
     return (
         <ThemeProvider theme={darkModeTheme}>
           <SnackbarProvider>
-            <div className={classes.root}>
+            <div className={classes.root} style={{display: "flex"}}>
                 <CssBaseline />
-
-                <AppBar position="fixed" className={classes.appBar}>
-                    <Toolbar>
-                        <Typography variant="h6" noWrap>
-                            OctoPrint Bundle Viewer
-                        </Typography>
-                        <UrlBar url={url} handleUrlChange={handleUrlChange} />
-                        <ShareButton url={url} />
-                        <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
-                    </Toolbar>
-                </AppBar>
-
+                <Navbar />
                 <main className={classes.content}>
-                    <div className={classes.offset} />
                     <Container maxWidth="lg" className={classes.container}>
                       <MainView />
                     </Container>
