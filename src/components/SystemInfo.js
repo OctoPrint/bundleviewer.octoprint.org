@@ -11,7 +11,7 @@ export default function SystemInfo(props) {
     return (
         <div>
             {lines.map((line, index) => (
-                <div>
+                <div key={line.key}>
                     <strong>{line.key}</strong>: {line.value}<br />
                 </div>
             ))}

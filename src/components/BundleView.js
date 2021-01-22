@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Typography from "@material-ui/core/Typography";
 import Accordion from "@material-ui/core/Accordion";
@@ -33,16 +33,25 @@ export default function BundleView(props) {
     const [systemInfo, setSystemInfo] = useState("");
     const [logs, setLogs] = useState([]);
 
+    const loadedUrl = useRef();
+
     useEffect(() => {
       if (props.url) {
+        console.log("loadedURL", loadedUrl.current);
+        if (props.url === loadedUrl.current) {
+            console.log("Same URL");
+            return;
+        }
         const url = corsRewrite(props.url);
         
+        setLoading(true);
+        setLogsLoading(true);
         ziputils.loadRemoteZip(url)
           .then(zip => {
+            loadedUrl.current = url;
+
             const files = ["octoprint.log", "serial.log", "terminal.txt", "plugin_softwareupdate_console.log", "plugin_pluginmanager_console.log"];
 
-            setLoading(true);
-            setLogsLoading(true);
             ziputils.getFileContents(zip, "systeminfo.txt", "string").then(content => {
               setSystemInfo(content);
               setLoading(false);
@@ -112,13 +121,13 @@ export default function BundleView(props) {
             return (
                 <div>
                     {logs.map((log, index) => (
-                        <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={"panel-log-" + index + "-content"} id={"panel-log-" + index + "-header"}>
-                            <Typography className={classes.heading}>{log.log}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <LogView log={log.log} content={log.content} language="plain" />
-                        </AccordionDetails>
+                        <Accordion key={log.log}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={"panel-log-" + index + "-content"} id={"panel-log-" + index + "-header"}>
+                                <Typography className={classes.heading}>{log.log}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <LogView log={log.log} content={log.content} language="plain" />
+                            </AccordionDetails>
                         </Accordion>
                     ))}
                 </div>

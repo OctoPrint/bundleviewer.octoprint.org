@@ -4,15 +4,17 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { makeStyles } from "@material-ui/core/styles";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
-import Switch from "@material-ui/core/Switch";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
+import DarkModeToggle from "./components/DarkModeToggle";
 import UrlBar from "./components/UrlBar";
 import BundleView from "./components/BundleView";
 import NothingLoaded from "./components/NothingLoaded";
+
+import useLocalStorage from "./hooks/useLocalStorage";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -36,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function App(props) {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const [darkMode, setDarkMode] = useState(prefersDarkMode);
+    const [darkMode, setDarkMode] = useLocalStorage("enableDarkMode", prefersDarkMode);
     const [url, setUrl] = useState(props.url);
 
     const pallet = darkMode ? "dark" : "light";
@@ -46,7 +48,7 @@ export default function App(props) {
         }
     });
 
-    const handleThemeToggle = () => {
+    const handleDarkModeToggle = () => {
         setDarkMode(!darkMode);
     }
 
@@ -79,7 +81,7 @@ export default function App(props) {
                             OctoPrint Bundle Viewer
                         </Typography>
                         <UrlBar url={url} handleUrlChange={handleUrlChange} />
-                        <Switch checked={darkMode} onChange={handleThemeToggle} />
+                        <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
                     </Toolbar>
                 </AppBar>
 
