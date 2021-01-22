@@ -57,6 +57,10 @@ export default function App(props) {
 
     const handleUrlChange = (newUrl) => {
       setUrl(newUrl);
+      
+      const windowUrl = new URL(window.location);
+      windowUrl.searchParams.set("url", url);
+      window.history.pushState({}, '', windowUrl);
     }
 
     const classes = useStyles();
