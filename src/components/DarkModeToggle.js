@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import Switch from "@material-ui/core/Switch";
-import Brightness6 from "@material-ui/icons/Brightness6";
+import BrightnessIcon from "@material-ui/icons/Brightness6";
 
 export default function DarkModeToggle(props) {
     const [darkMode, setDarkMode] = useState(props.darkMode);
@@ -13,9 +13,8 @@ export default function DarkModeToggle(props) {
 
     return (
         <div style={{ display: "flex", alignItems: "center" }}>
-            <Brightness6 />
+            <BrightnessIcon />
             <Switch checked={darkMode} onChange={handleDarkModeToggle} />
         </div>
-        
     )
 }

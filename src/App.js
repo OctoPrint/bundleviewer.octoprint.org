@@ -9,8 +9,11 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
+import { SnackbarProvider } from "notistack";
+
 import DarkModeToggle from "./components/DarkModeToggle";
 import UrlBar from "./components/UrlBar";
+import ShareButton from "./components/ShareButton";
 import BundleView from "./components/BundleView";
 import NothingLoaded from "./components/NothingLoaded";
 
@@ -72,6 +75,7 @@ export default function App(props) {
 
     return (
         <ThemeProvider theme={darkModeTheme}>
+          <SnackbarProvider>
             <div className={classes.root}>
                 <CssBaseline />
 
@@ -81,6 +85,7 @@ export default function App(props) {
                             OctoPrint Bundle Viewer
                         </Typography>
                         <UrlBar url={url} handleUrlChange={handleUrlChange} />
+                        <ShareButton url={url} />
                         <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
                     </Toolbar>
                 </AppBar>
@@ -92,6 +97,7 @@ export default function App(props) {
                     </Container>
                 </main>
             </div>
+          </SnackbarProvider>
         </ThemeProvider>
     )
 }

@@ -5,7 +5,6 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import InputBase from "@material-ui/core/InputBase";
 import LinkIcon from "@material-ui/icons/LinkOutlined";
 
-
 const useStyles = makeStyles(theme => ({
     grow: {
       flexGrow: 1
@@ -60,20 +59,19 @@ export default function UrlBar(props) {
 
     return (
         <div className={classes.url}>
-        <div className={classes.urlIcon}>
-          <LinkIcon />
+            <div className={classes.urlIcon}>
+            <LinkIcon />
+            </div>
+            <InputBase
+            placeholder="URL..."
+            classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+            }}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown} 
+            defaultValue={props.url}
+            />
         </div>
-        <InputBase
-          placeholder="URL..."
-          classes={{
-            root: classes.inputRoot,
-            input: classes.inputInput,
-          }}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown} 
-          defaultValue={props.url}
-        />
-      </div>
-
     )
 }
