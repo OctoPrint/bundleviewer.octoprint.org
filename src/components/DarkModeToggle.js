@@ -15,7 +15,7 @@ export default function DarkModeToggle(props) {
 
     return (
         <Tooltip title="Toggle dark mode">
-            <IconButton onClick={handleDarkModeToggle} color="inherit" title="Toggle Dark Mode">
+            <IconButton onClick={handleDarkModeToggle} color="inherit">
                 { darkMode ? <LightModeIcon /> : <DarkModeIcon /> }
             </IconButton>
         </Tooltip>
