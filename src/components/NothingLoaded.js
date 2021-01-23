@@ -1,11 +1,30 @@
 import React from "react";
 
-import Typography from "@material-ui/core/Typography";
+import { DropzoneArea } from "material-ui-dropzone";
 
-export default function NothingLoaded() {
+export default function NothingLoaded(props) {
+    console.log("Rendering NothingChanged...");
+
+    const handleChange = (files) => {
+        console.log("Entered NothingLoaded.handleChange...");
+        if (files.length > 0) {
+            props.onUpload(files[0]);
+        }
+        console.log("Exiting NothingLoaded.handleChange...");
+    };
+
     return (
-        <Typography style={{ display: "flex", justifyContent: "center" }}>
-            Please enter a bundle URL and press Enter.
-        </Typography>
+        <div style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
+            <DropzoneArea
+                style={{"flex-basis": "100%"}}
+                dropzoneText="Enter an URL for a bundle above and press Enter, or drag and drop a file here or click to upload one"
+                onChange={handleChange} 
+                filesLimit={1} 
+                acceptedFiles={[".zip"]}
+                maxFileSize={30000000}
+                showPreviewsInDropzone={false}
+                showAlerts={false}
+                />
+        </div>
     )
 }

@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^12.1.10",
     "clsx": "^1.1.1",
     "jszip": "^3.5.0",
+    "material-ui-dropzone": "^3.5.0",
     "notistack": "^1.0.3",
     "qs": "^6.9.6",
     "react": "^17.0.1",

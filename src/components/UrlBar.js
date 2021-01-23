@@ -4,7 +4,8 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 
 import InputBase from "@material-ui/core/InputBase";
 import Hidden from "@material-ui/core/Hidden";
-import LinkIcon from "@material-ui/icons/LinkOutlined";
+import LinkIcon from "@material-ui/icons/Link";
+import UploadIcon from "@material-ui/icons/CloudUpload";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -51,13 +52,16 @@ export default function UrlBar(props) {
     const classes = useStyles();
 
     const [url, setUrl] = useState(props.url);
+    const [mode] = useState(props.filename ? "upload" : "url");
 
     const handleChange = (event) => {
-        setUrl(event.target.value);
+        if (mode === "url") {
+            setUrl(event.target.value);
+        }
     }
 
     const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
+        if (mode === "url" && event.key === "Enter") {
             props.handleUrlChange(url);
         }
     }
@@ -66,7 +70,11 @@ export default function UrlBar(props) {
         <div className={classes.url}>
             <Hidden mdDown>
                 <div className={classes.urlIcon}>
+                {props.filename ? (
+                    <UploadIcon />
+                ) : (
                     <LinkIcon />
+                )}
                 </div>
             </Hidden>
             <InputBase
@@ -76,8 +84,9 @@ export default function UrlBar(props) {
                     input: classes.inputInput,
                 }}
                 onChange={handleChange}
-                onKeyDown={handleKeyDown} 
-                defaultValue={props.url}
+                onKeyDown={handleKeyDown}
+                defaultValue={(mode === "upload" ? props.filename : props.url)}
+                inputProps={{ readOnly: mode === "upload", }}
             />
         </div>
     )

@@ -16,7 +16,7 @@ import { useSnackbar } from "notistack";
 
 export default function ShareButton(props) {
     const { enqueueSnackbar } = useSnackbar();
-    const [ shareModalOpen, setShareModalOpen ] = useState();
+    const [ shareModalOpen, setShareModalOpen ] = useState(false);
     const shareUrl = window.location.origin + window.location.pathname + "?url=" + encodeURIComponent(props.url);
 
     const handleShareClick = () => {

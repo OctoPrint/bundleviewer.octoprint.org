@@ -11,6 +11,10 @@ async function loadRemote(url) {
 
 async function loadRemoteZip(url) {
     const blob = await loadRemote(url);
+    return await loadZip(blob);
+}
+
+async function loadZip(blob) {
     return await JSZip.loadAsync(blob);
 }
 
@@ -19,12 +23,13 @@ async function containsFile(zip, filename) {
 }
 
 async function getFileContents(zip, filename, format) {
-    format = format || "arraybuffer";
+    format = format || "blob";
     return await zip.file(filename).async(format);
 }
 
 const utils = {
     loadRemote: loadRemote,
+    loadZip: loadZip,
     loadRemoteZip: loadRemoteZip,
     containsFile: containsFile,
     getFileContents: getFileContents

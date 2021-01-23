@@ -7,10 +7,12 @@ import { CssBaseline } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
 import GitHubIcon from "@material-ui/icons/GitHub";
+import HomeIcon from "@material-ui/icons/Home";
+import { Alert, AlertTitle } from '@material-ui/lab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { SnackbarProvider } from "notistack";
 
@@ -21,6 +23,9 @@ import BundleView from "./components/BundleView";
 import NothingLoaded from "./components/NothingLoaded";
 
 import useLocalStorage from "./hooks/useLocalStorage";
+
+import ziputils from "./util/zip";
+import bundleutils from "./util/bundle";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -70,10 +75,24 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+function corsRewrite(url) {
+  const githubRegex = /^https:\/\/github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/files\//
+  if (url.match(githubRegex)) {
+      return url.replace("https://github.com", "https://bundleviewer.octoprint.org/bundles");
+  }
+  return url;
+}
+
 export default function App(props) {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const [darkMode, setDarkMode] = useLocalStorage("enableDarkMode", prefersDarkMode);
+
     const [url, setUrl] = useState(props.url);
+    const [filename, setFilename] = useState(props.url);
+  
+    const [bundle, setBundle] = useState(bundleutils.defaultBundle);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const pallet = darkMode ? "dark" : "light";
     const darkModeTheme = createMuiTheme({
@@ -87,23 +106,90 @@ export default function App(props) {
     }
 
     const handleUrlChange = (newUrl) => {
-      setUrl(newUrl);
-      
+      if (!newUrl) {
+        handleReset();
+      } else {
+        setError(false);
+        setLoading(true);
+  
+        setUrl(newUrl);
+        updateHistory(newUrl);
+        setFilename("");
+  
+        const url = corsRewrite(newUrl);
+        ziputils.loadRemoteZip(url).then(handleZipChange).catch(handleError);
+      }
+    }
+
+    const handleUpload = (blob) => {
+      setError(false);
+      setLoading(true);
+
+      setFilename(blob.name);
+      setUrl("");
+
+      ziputils.loadZip(blob).then(handleZipChange).catch(handleError);
+    }
+
+    const handleZipChange = (zip) => {
+      bundleutils.loadBundle(zip).then((bundle) => {
+        setBundle(bundle);
+        setLoading(false);
+        console.log("Loading complete");
+      }).catch(handleError);
+    }
+
+    const handleError = (error) => {
+      console.log(error);
+      setError(true);
+    }
+
+    const handleReset = () => {
+      setUrl("");
+      setFilename("");
+      setError(false);
+      setLoading(false);
+      setBundle(bundleutils.defaultBundle);
+      updateHistory();
+    }
+
+    const updateHistory = (newUrl) => {
       const windowUrl = new URL(window.location);
-      windowUrl.searchParams.set("url", url);
-      window.history.pushState({}, '', windowUrl);
+      if (newUrl) {
+        windowUrl.searchParams.set("url", newUrl);
+      } else {
+        windowUrl.searchParams.delete("url");
+      }
+      window.history.replaceState({}, '', windowUrl);
     }
 
     const classes = useStyles();
 
     const MainView = () => {
-      if (url) {
+      if (error) {
+        console.log("Rendering error screen");
         return (
-          <BundleView url={url} />
+          <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              Could not load bundle, is it accessible and an OctoPrint SystemInfo Bundle zipfile?
+          </Alert>
+        )
+      } else if (loading) {
+        console.log("Rendering loading screen");
+        return (
+          <div style={{ display: "flex", justifyContent: "center", }}>
+              <CircularProgress />
+          </div>
+        )
+      } else if (bundle.systeminfo) {
+        console.log("Rendering bundle");
+        return (
+          <BundleView bundle={bundle} />
         )
       } else {
+        console.log("Rendering empty");
         return (
-          <NothingLoaded />
+          <NothingLoaded onUpload={handleUpload} />
         )
       }
     }
@@ -112,18 +198,16 @@ export default function App(props) {
       return (
         <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
-              <Hidden>
-                <Typography variant="h6" noWrap className={classes.title}>
-                    OctoPrint Bundle Viewer
-                </Typography>
-              </Hidden>
+              <IconButton onClick={handleReset}>
+                <HomeIcon />
+              </IconButton>
               <Hidden mdUp>
                 <div className={classes.grow} />
               </Hidden>
               <div className={classes.urlbar}>
-                <UrlBar url={url} handleUrlChange={handleUrlChange} />
+                <UrlBar url={url} filename={filename} handleUrlChange={handleUrlChange} />
               </div>
-              <ShareButton url={url} />
+              {url ? <ShareButton url={url} /> : null}
               <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
               <Hidden xsDown>
                 <IconButton href="https://github.com/OctoPrint/bundleviewer.octoprint.org" target="_blank">
