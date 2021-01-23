@@ -38,7 +38,9 @@ export default function SystemInfo(props) {
         const value = info[key];
 
         if (value) {
-            return `${title} ${value}`;
+            return (
+                <Typography className={classes.secondaryHeading}>{title + " " + value}</Typography>
+            );
         } else {
             return (null);
         }
@@ -52,15 +54,9 @@ export default function SystemInfo(props) {
                 <Typography className={classes.heading}>System Information</Typography>
                 <span className={classes.grow}></span>
                 {throttled ? <ErrorIcon /> : (null)}
-                <Typography className={classes.secondaryHeading}>
-                    {InfoField("OctoPrint", "octoprint.version")}
-                </Typography>
-                <Typography className={classes.secondaryHeading}>
-                    {InfoField("Python", "env.python.version")}
-                </Typography>
-                <Typography className={classes.secondaryHeading}>
-                    {InfoField("OctoPi", "env.plugins.pi_support.octopi_version")}
-                </Typography>
+                {InfoField("OctoPrint", "octoprint.version")}
+                {InfoField("Python", "env.python.version")}
+                {InfoField("OctoPi", "env.plugins.pi_support.octopi_version")}
             </AccordionSummary>
 
             <AccordionDetails>
