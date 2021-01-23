@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { makeStyles } from "@material-ui/core/styles";
@@ -88,7 +88,7 @@ export default function App(props) {
     const [darkMode, setDarkMode] = useLocalStorage("enableDarkMode", prefersDarkMode);
 
     const [url, setUrl] = useState(props.url);
-    const [filename, setFilename] = useState(props.url);
+    const [filename, setFilename] = useState("");
   
     const [bundle, setBundle] = useState(bundleutils.defaultBundle);
     const [error, setError] = useState(false);
@@ -104,6 +104,11 @@ export default function App(props) {
     const handleDarkModeToggle = () => {
         setDarkMode(!darkMode);
     }
+
+    useEffect(() => {
+      handleUrlChange(props.url);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleUrlChange = (newUrl) => {
       if (!newUrl) {
