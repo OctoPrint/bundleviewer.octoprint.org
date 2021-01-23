@@ -11,6 +11,8 @@ export default function LogView(props) {
             flexGrow: 1,
             overflow: "auto",
             padding: 0,
+        },
+        pre: {
             "font-family": "'JetBrains Mono', 'Droid Sans Mono', monospace",
         },
         line: {
@@ -31,7 +33,7 @@ export default function LogView(props) {
 
     return (
         <code className={classes.log}>
-            <pre>
+            <pre className={classes.pre}>
                 <FixedSizeList 
                     height={500}
                     itemCount={lineCount}
