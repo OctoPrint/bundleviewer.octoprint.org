@@ -203,7 +203,7 @@ export default function App(props) {
       return (
         <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
-              <IconButton onClick={handleReset}>
+              <IconButton onClick={handleReset} color="inherit">
                 <HomeIcon />
               </IconButton>
               <Hidden mdUp>
@@ -215,7 +215,7 @@ export default function App(props) {
               {url ? <ShareButton url={url} /> : null}
               <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
               <Hidden xsDown>
-                <IconButton href="https://github.com/OctoPrint/bundleviewer.octoprint.org" target="_blank">
+                <IconButton href="https://github.com/OctoPrint/bundleviewer.octoprint.org" target="_blank" color="inherit">
                   <GitHubIcon />
                 </IconButton>
               </Hidden>
