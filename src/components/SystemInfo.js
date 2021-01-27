@@ -5,19 +5,48 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
-import ErrorIcon from "@material-ui/icons/Error";
+import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
 
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
+    accordionbar: {
+        display: "flex",
+        flexGrow: 1,
+        alignItems: "center",
+        [theme.breakpoints.down('md')]: {
+            flexWrap: "wrap",
+        },
+    },
     grow: {
         flexGrow: 1,
     },
+    icon: {
+        padding: theme.spacing(0, 1),
+    },
     secondaryHeading: {
-        fontSize: theme.typography.pxToRem(16),
+        fontSize: theme.typography.pxToRem(12),
         color: theme.palette.text.secondary,
         padding: theme.spacing(0, 1),
+        textAlign: "right",
+        [theme.breakpoints.down('md')]: {
+            textAlign: "left",
+            padding: theme.spacing(0, 0),
+        },
+    },
+    title: {
+        flexGrow: 1,
+        alignItems: "center",
+        [theme.breakpoints.down('md')]: {
+            flexBasis: "100%"
+        }
+    },
+    info: {
+        [theme.breakpoints.down('md')]: {
+            flexBasis: "100%"
+        }
     }
 }));
 
@@ -51,12 +80,19 @@ export default function SystemInfo(props) {
     return (
         <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel-sysinfo-content" id="panel-sysinfo-header">
-                <Typography className={classes.heading}>System Information</Typography>
-                <span className={classes.grow}></span>
-                {throttled ? <ErrorIcon /> : (null)}
-                {InfoField("OctoPrint", "octoprint.version")}
-                {InfoField("Python", "env.python.version")}
-                {InfoField("OctoPi", "env.plugins.pi_support.octopi_version")}
+                <div className={classes.accordionbar}>
+                    <div className={classes.title}>
+                        <Typography className={classes.heading} style={{ display: "flex", alignItems: "center" }}>
+                            System Information
+                            {throttled ? <Tooltip title="Throttling detected" className={classes.icon}><ThrottledIcon /></Tooltip> : (null)}
+                        </Typography>
+                    </div>
+                    <div className={classes.info}>
+                        {InfoField("OctoPrint", "octoprint.version")}
+                        {InfoField("Python", "env.python.version")}
+                        {InfoField("OctoPi", "env.plugins.pi_support.octopi_version")}
+                    </div>
+                </div>
             </AccordionSummary>
 
             <AccordionDetails>

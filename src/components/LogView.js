@@ -6,8 +6,11 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import ErrorIcon from "@material-ui/icons/Error";
+
+import millify from "millify";
 
 export default function LogView(props) {
     const log = props.log;
@@ -24,6 +27,9 @@ export default function LogView(props) {
         pre: {
             margin: 0,
             "font-family": "'JetBrains Mono', 'Droid Sans Mono', monospace",
+            [theme.breakpoints.down('md')]: {
+                fontSize: theme.typography.pxToRem(12),
+            }
         },
         line: {
             paddingLeft: theme.spacing(1),
@@ -51,14 +57,42 @@ export default function LogView(props) {
                 "color": theme.palette.error.main
             },
         },
+        accordionbar: {
+            display: "flex",
+            flexGrow: 1,
+            alignItems: "center",
+            [theme.breakpoints.down('md')]: {
+                flexWrap: "wrap",
+            },
+        },
         grow: {
             flexGrow: 1,
         },
+        icon: {
+            padding: theme.spacing(0, 1),
+        },
         secondaryHeading: {
-            fontSize: theme.typography.pxToRem(16),
+            fontSize: theme.typography.pxToRem(12),
             color: theme.palette.text.secondary,
             padding: theme.spacing(0, 1),
-        }    
+            textAlign: "right",
+            [theme.breakpoints.down('md')]: {
+                textAlign: "left",
+                padding: theme.spacing(0, 0),
+            },
+        },
+        title: {
+            flexGrow: 1,
+            alignItems: "center",
+            [theme.breakpoints.down('md')]: {
+                flexBasis: "100%"
+            }
+        },
+        info: {
+            [theme.breakpoints.down('md')]: {
+                flexBasis: "100%"
+            }
+        }
     }))();
 
     const getLoglevel = (line) => {
@@ -109,15 +143,22 @@ export default function LogView(props) {
     return (
         <Accordion key={log}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={"panel-log-" + props.index + "-content"} id={"panel-log-" + props.index + "-header"}>
-                <Typography className={classes.heading}>{log}</Typography>
-                <span className={classes.grow}></span>
-                {serialAndDisabled ? <ErrorIcon /> : (null)}
-                <Typography className={classes.secondaryHeading}>
-                    {content.length + " characters"}
-                </Typography>
-                <Typography className={classes.secondaryHeading}>
-                    {lineCount + " " + (lineCount === 1 ? "line" : "lines")}
-                </Typography>
+                <div className={classes.accordionbar}>
+                    <div className={classes.title}>
+                        <Typography className={classes.heading} style={{ display: "flex", alignItems: "center" }}>
+                            {log}
+                            {serialAndDisabled ? <Tooltip title="serial.log is disabled" className={classes.icon}><ErrorIcon /></Tooltip> : (null)}
+                        </Typography>
+                    </div>
+                    <div className={classes.info}>
+                        <Typography className={classes.secondaryHeading}>
+                            {millify(content.length) + " " + (content.length === 1 ? "char" : "chars")}
+                        </Typography>
+                        <Typography className={classes.secondaryHeading}>
+                            {millify(lineCount) + " " + (lineCount === 1 ? "line" : "lines")}
+                        </Typography>
+                    </div>
+                </div>
             </AccordionSummary>
             <AccordionDetails>
                 <code className={classes.log}>
