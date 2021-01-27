@@ -5,7 +5,6 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
 
 import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
 
@@ -25,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
     icon: {
         padding: theme.spacing(0, 1),
+        fontSize: "1.5rem",
     },
     secondaryHeading: {
         fontSize: theme.typography.pxToRem(12),
@@ -75,7 +75,7 @@ export default function SystemInfo(props) {
         }
     }
 
-    const throttled = (info["env.plugins.pi_support.throttle_state"] && info["env.plugins.pi_support.throttle_state"] !== "0x0");
+    const throttled = true|| (info["env.plugins.pi_support.throttle_state"] && info["env.plugins.pi_support.throttle_state"] !== "0x0");
 
     return (
         <Accordion defaultExpanded>
@@ -84,7 +84,7 @@ export default function SystemInfo(props) {
                     <div className={classes.title}>
                         <Typography className={classes.heading} style={{ display: "flex", alignItems: "center" }}>
                             System Information
-                            {throttled ? <Tooltip title="Throttling detected" className={classes.icon}><ThrottledIcon /></Tooltip> : (null)}
+                            {throttled ? <ThrottledIcon className={classes.icon} size="1.5em" /> : (null)}
                         </Typography>
                     </div>
                     <div className={classes.info}>

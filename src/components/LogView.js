@@ -6,9 +6,8 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
 
-import ErrorIcon from "@material-ui/icons/Error";
+import ErrorIcon from "mdi-react/ErrorIcon";
 
 import millify from "millify";
 
@@ -70,6 +69,7 @@ export default function LogView(props) {
         },
         icon: {
             padding: theme.spacing(0, 1),
+            fontSize: "1.5rem",
         },
         secondaryHeading: {
             fontSize: theme.typography.pxToRem(12),
@@ -147,7 +147,7 @@ export default function LogView(props) {
                     <div className={classes.title}>
                         <Typography className={classes.heading} style={{ display: "flex", alignItems: "center" }}>
                             {log}
-                            {serialAndDisabled ? <Tooltip title="serial.log is disabled" className={classes.icon}><ErrorIcon /></Tooltip> : (null)}
+                            {serialAndDisabled ? <ErrorIcon className={classes.icon} size="1.5em" /> : (null)}
                         </Typography>
                     </div>
                     <div className={classes.info}>
