@@ -75,7 +75,7 @@ export default function SystemInfo(props) {
         }
     }
 
-    const throttled = true|| (info["env.plugins.pi_support.throttle_state"] && info["env.plugins.pi_support.throttle_state"] !== "0x0");
+    const throttled = (info["env.plugins.pi_support.throttle_state"] && info["env.plugins.pi_support.throttle_state"] !== "0x0");
 
     return (
         <Accordion defaultExpanded>
