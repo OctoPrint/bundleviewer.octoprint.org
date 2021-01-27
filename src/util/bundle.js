@@ -1,5 +1,11 @@
 import ziputils from "./zip";
 
+const logToLanguage = {
+    "octoprint.log": "log",
+    "plugin_softwareupdate_console.log": "cli",
+    "plugin_pluginmanager_console.log": "cli"
+}
+
 async function loadBundle(zip) {
     const files = ["octoprint.log", "serial.log", "terminal.txt", "plugin_softwareupdate_console.log", "plugin_pluginmanager_console.log"];
 
@@ -20,7 +26,8 @@ async function loadBundle(zip) {
     const logs = [];
     for (const filename of files) {
         if (contents[filename]) {
-            logs.push({ log: filename, content: contents[filename] });
+            const language = logToLanguage[filename] || "plain";
+            logs.push({ log: filename, content: contents[filename], language: language });
         }
     }
 

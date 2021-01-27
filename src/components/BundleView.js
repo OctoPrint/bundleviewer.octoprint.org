@@ -9,7 +9,7 @@ export default function BundleView(props) {
             <SystemInfo info={props.bundle.systeminfo} />
             <div>
                 {props.bundle.logs.map((log, index) => (
-                    <LogView log={log.log} content={log.content} index={index} language="plain" />
+                    <LogView log={log.log} content={log.content} language={log.language} index={index} />
                 ))}
             </div>
       </div>
