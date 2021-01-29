@@ -77,8 +77,11 @@ const useStyles = makeStyles(theme => ({
 
 function corsRewrite(url) {
   const githubRegex = /^https:\/\/github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/files\//
+  const forumRegex = /^https:\/\/community\.octoprint\.org\/uploads\/short-url\//
   if (url.match(githubRegex)) {
       return url.replace("https://github.com", "https://bundleviewer.octoprint.org/bundles");
+  } else if (url.match(forumRegex)) {
+      return url.replace("https://community.octoprint.org/uploads/short-url", "https://bundleviewer.octoprint.org/bundles/forum");
   }
   return url;
 }
