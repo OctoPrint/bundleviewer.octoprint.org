@@ -83,7 +83,7 @@ export default function SystemInfo(props) {
 
     const safemode = checkField("octoprint.safe_mode", value => (value === "true"));
     const throttled = checkField("env.plugins.pi_support.throttle_state", value => (value !== "0x0"));
-    const marlin_bugfix = checkField("printer.firmware", value => (value.contains("Marlin bugfix-")));
+    const marlin_bugfix = checkField("printer.firmware", value => (value.includes("Marlin bugfix-")));
 
     return (
         <Accordion defaultExpanded>
