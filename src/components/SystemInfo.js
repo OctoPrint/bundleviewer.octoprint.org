@@ -7,6 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
 
 import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
+import BugfixIcon from "mdi-react/BugCheckIcon";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -76,6 +77,7 @@ export default function SystemInfo(props) {
     }
 
     const throttled = (info["env.plugins.pi_support.throttle_state"] && info["env.plugins.pi_support.throttle_state"] !== "0x0");
+    const marlin_bugfix = (info["printer.firmware"] && info["printer.firmware"].contains("Marlin bugfix-"));
 
     return (
         <Accordion defaultExpanded>
@@ -84,6 +86,7 @@ export default function SystemInfo(props) {
                     <div className={classes.title}>
                         <Typography className={classes.heading} style={{ display: "flex", alignItems: "center" }}>
                             System Information
+                            {marlin_bugfix ? <BugfixIcon className={classes.icon} size="1.5em" /> : (null)}
                             {throttled ? <ThrottledIcon className={classes.icon} size="1.5em" /> : (null)}
                         </Typography>
                     </div>
@@ -91,6 +94,7 @@ export default function SystemInfo(props) {
                         {InfoField("OctoPrint", "octoprint.version")}
                         {InfoField("Python", "env.python.version")}
                         {InfoField("OctoPi", "env.plugins.pi_support.octopi_version")}
+                        {InfoField("Firmware", "printer.firmware")}
                     </div>
                 </div>
             </AccordionSummary>
