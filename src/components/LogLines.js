@@ -84,11 +84,11 @@ export default function LogLines(props) {
     );
 
     const CliLine = ({ index, style }) => (
-        <span data-matched={matchesQuery(lines[index])} style={style}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
+        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
     )
 
     const PlainLine = ({ index, style }) => (
-        <span data-matched={matchesQuery(lines[index])} style={style}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
+        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
     );
 
     let Line;

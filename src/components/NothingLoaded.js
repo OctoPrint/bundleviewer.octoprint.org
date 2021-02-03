@@ -8,6 +8,7 @@ export default function NothingLoaded(props) {
     const handleChange = (files) => {
         console.log("Entered NothingLoaded.handleChange...");
         if (files.length > 0) {
+            console.log("File:", files[0]);
             props.onUpload(files[0]);
         }
         console.log("Exiting NothingLoaded.handleChange...");
@@ -18,9 +19,9 @@ export default function NothingLoaded(props) {
             <DropzoneArea
                 style={{"flex-basis": "100%"}}
                 dropzoneText="Enter an URL for a bundle above and press Enter, or drag and drop a file here or click to upload one"
-                onChange={handleChange} 
+                onChange={handleChange}
                 filesLimit={1} 
-                acceptedFiles={[".zip"]}
+                acceptedFiles={[".zip", ".log", ".txt"]}
                 maxFileSize={30000000}
                 showPreviewsInDropzone={false}
                 showAlerts={false}

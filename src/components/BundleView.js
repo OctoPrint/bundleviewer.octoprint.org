@@ -6,10 +6,10 @@ import SystemInfo from "./SystemInfo";
 export default function BundleView(props) {
     return (
       <div>
-            <SystemInfo info={props.bundle.systeminfo} />
+            { props.bundle.systeminfo ? <SystemInfo info={props.bundle.systeminfo} /> : (null)}
             <div>
                 {props.bundle.logs.map((log, index) => (
-                    <LogView log={log.log} content={log.content} language={log.language} index={index} />
+                    <LogView expanded={ !props.bundle.systeminfo && index === 0 } log={log.log} content={log.content} index={index} />
                 ))}
             </div>
       </div>

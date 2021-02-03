@@ -24,8 +24,10 @@ import NothingLoaded from "./components/NothingLoaded";
 
 import useLocalStorage from "./hooks/useLocalStorage";
 
+import remoteutils from "./util/remote";
 import ziputils from "./util/zip";
 import bundleutils from "./util/bundle";
+import contenttypeutils from "content-type";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -125,7 +127,8 @@ export default function App(props) {
         setFilename("");
   
         const url = corsRewrite(newUrl);
-        ziputils.loadRemoteZip(url).then(handleZipChange).catch(handleError);
+
+        remoteutils.loadRemote(url).then(handleFileChange).catch(handleError);
       }
     }
 
@@ -136,7 +139,29 @@ export default function App(props) {
       setFilename(blob.name);
       setUrl("");
 
-      ziputils.loadZip(blob).then(handleZipChange).catch(handleError);
+      handleFileChange(blob);
+    }
+
+    const handleFileChange = (blob) => {
+      ziputils.loadZip(blob)
+        .then(handleZipChange)
+        .catch((error) => {
+          let contentType;
+          try {
+            contentType = contenttypeutils.parse(blob.type).type;
+          } catch (err) {
+            contentType = "";
+          }
+
+          if (contentType === "" || contentType.startsWith("text/")) {
+            bundleutils.loadLog(blob).then((bundle) => {
+              setBundle(bundle);
+              setLoading(false);
+            }).catch(handleError);
+          } else {
+            handleError(error);
+          }
+        })
     }
 
     const handleZipChange = (zip) => {
@@ -179,7 +204,8 @@ export default function App(props) {
         return (
           <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Could not load bundle, is it accessible and an OctoPrint SystemInfo Bundle zipfile?
+              Could not load bundle or single log. Make sure you are trying to load either an OctoPrint
+              Systeminfo Bundle (zip) or a single plain text log file. Other files are not supported.
           </Alert>
         )
       } else if (loading) {
@@ -189,7 +215,7 @@ export default function App(props) {
               <CircularProgress />
           </div>
         )
-      } else if (bundle.systeminfo) {
+      } else if (bundle.hasContent) {
         console.log("Rendering bundle");
         return (
           <BundleView bundle={bundle} />

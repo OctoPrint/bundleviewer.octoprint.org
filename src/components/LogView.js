@@ -12,6 +12,23 @@ import ErrorIcon from "mdi-react/ErrorIcon";
 
 import millify from "millify";
 
+const languages = [
+    { language: "cli", patterns: [/^.*_console.*\.log$/]},
+    { language: "log", patterns: [/^.*\.log$/] }
+]
+
+const guessLanguage = (filename) => {
+    for (const { language, patterns } of languages) {
+        for (const pattern of patterns) {
+            if (filename.match(pattern)) {
+                console.log(`Match! ${pattern} vs ${filename}`)
+                return language;
+            }
+        }
+    }
+    return "plain";
+}
+
 export default function LogView(props) {
     const log = props.log;
     const content = props.content;
@@ -122,7 +139,7 @@ export default function LogView(props) {
     const serialAndDisabled = (log === "serial.log" && lineCount === 1 && lines[0].includes("serial.log is currently not enabled"));
 
     return (
-        <Accordion key={log}>
+        <Accordion key={log} defaultExpanded={props.expanded}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={"panel-log-" + props.index + "-content"} id={"panel-log-" + props.index + "-header"}>
                 <div className={classes.accordionbar}>
                     <div className={classes.title}>
@@ -151,7 +168,7 @@ export default function LogView(props) {
                     onCancel={onCancelQuery}
                     handlePerformQuery={onPerformQuery} 
                 />
-                <LogLines lines={lines} query={query} scrollTo={scrollTo} language={props.language} />
+                <LogLines lines={lines} query={query} scrollTo={scrollTo} language={props.language || guessLanguage(log)} />
             </AccordionDetails>
         </Accordion>
     )

@@ -1,16 +1,8 @@
 import JSZip from "jszip";
-
-async function loadRemote(url) {
-    const response = await fetch(url, {mode: 'cors',});
-    console.log(response);
-    if (!response.ok) {
-        throw new Error(`Could not load file from ${url}: ${response.status}`);
-    }
-    return await response.blob();
-}
+import remoteutils from "./remote"
 
 async function loadRemoteZip(url) {
-    const blob = await loadRemote(url);
+    const { blob } = await remoteutils.loadRemote(url);
     return await loadZip(blob);
 }
 
@@ -28,7 +20,6 @@ async function getFileContents(zip, filename, format) {
 }
 
 const utils = {
-    loadRemote: loadRemote,
     loadZip: loadZip,
     loadRemoteZip: loadRemoteZip,
     containsFile: containsFile,
