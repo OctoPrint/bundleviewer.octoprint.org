@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FixedSizeList } from "react-window";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
+import SearchBar from "./SearchBar";
+import LogLines from "./LogLines";
 
 import ErrorIcon from "mdi-react/ErrorIcon";
 
@@ -17,44 +18,14 @@ export default function LogView(props) {
     const lines = content.trim().split("\n");
     const lineCount = lines.length;
 
+    const [query, setQuery] = useState("");
+    const [scrollTo, setScrollTo] = useState(0);
+
+    const [cursor, setCursor] = useState(0);
+    const [indices, setIndices] = useState([]);
+
     const classes = makeStyles(theme => ({
         background: {
-        },
-        log: {
-            flexGrow: 1,
-        },
-        pre: {
-            margin: 0,
-            "font-family": "'JetBrains Mono', 'Droid Sans Mono', monospace",
-            [theme.breakpoints.down('md')]: {
-                fontSize: theme.typography.pxToRem(12),
-            }
-        },
-        line: {
-            paddingLeft: theme.spacing(1),
-            "&::before": {
-                content: "attr(data-linenumber)",
-                display: "inline-block",
-                width: `${lineCount.toString().length}ch`,
-                "text-align": "right",
-                "margin-right": "1em",
-                "color": theme.palette.text.disabled
-            },
-            "&[data-loglevel=\"DEBUG\"]": {
-                "color": theme.palette.text.secondary
-            },
-            "&[data-loglevel=\"WARNING\"]": {
-                "color": theme.palette.warning.main
-            },
-            "&[data-loglevel=\"ERROR\"]": {
-                "color": theme.palette.error.main
-            },
-            "&[data-stream=\"stdin\"]": {
-                "color": theme.palette.info.main
-            },
-            "&[data-stream=\"stderr\"]": {
-                "color": theme.palette.error.main
-            },
         },
         accordionbar: {
             display: "flex",
@@ -63,6 +34,11 @@ export default function LogView(props) {
             [theme.breakpoints.down('md')]: {
                 flexWrap: "wrap",
             },
+        },
+        accordiondetails: {
+            display: "flex",
+            flexGrow: 1,
+            flexDirection: "column"
         },
         grow: {
             flexGrow: 1,
@@ -95,48 +71,53 @@ export default function LogView(props) {
         }
     }))();
 
-    const getLoglevel = (line) => {
-        let parts = line.split(" ");
-        return parts[5];
+    const onCancelQuery = () => {
+        setIndices([]);
+        setCursor(0);
+        setQuery("");
     }
 
-    const getStream = (line) => {
-        const prefix = line.charAt(24);
-        switch (prefix) {
-            case " ": return "stdin";
-            case ">": return "stdout";
-            case "!": return "stderr";
-            default: return "plain";
+    const onPerformQuery = (q) => {
+        if (!q) return;
+
+        console.log("Starting query:", q);
+        if (q !== query) {
+            console.log("... calculate matches");
+            const qLower = q.toLowerCase();
+            const ind = lines.reduce((a, c, i) => {
+                if (c.toLowerCase().includes(qLower)) {
+                    a.push(i);
+                }
+                return a;
+            }, []);
+
+            if (ind.length) {
+                setScrollTo(ind[0]);
+            }
+
+            setIndices(ind);
+            setCursor(0);
+            setQuery(q);
+            console.log("Indices:", ind, ", cursor:", 0);
+        } else {
+            nextResult();
         }
     }
 
-    const LogLine = ({ index, style }) => (
-        <span style={style}><span data-linenumber={index + 1} data-loglevel={getLoglevel(lines[index])} className={classes.line}>{lines[index]}</span></span>
-    );
-
-    const CliLine = ({ index, style }) => (
-        <span style={style}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
-    )
-
-    const PlainLine = ({ index, style }) => (
-        <span style={style}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
-    );
-
-    let Line;
-    switch (props.language) {
-        case "log": {
-            Line = LogLine;
-            break;
+    const nextResult = () => {
+        if (indices.length) {
+            const c = cursor < indices.length - 1 ? cursor + 1 : 0;
+            setScrollTo(indices[c]);
+            setCursor(c);
         }
-        case "cli": {
-            Line = CliLine;
-            break;
+    };
+    const previousResult = () => {
+        if (indices.length) {
+            const c = cursor > 0 ? (cursor - 1) : (indices.length - 1);
+            setScrollTo(indices[c]);
+            setCursor(c);
         }
-        default: {
-            Line = PlainLine;
-            break;
-        }
-    }
+    };
 
     const serialAndDisabled = (log === "serial.log" && lineCount === 1 && lines[0].includes("serial.log is currently not enabled"));
 
@@ -160,19 +141,17 @@ export default function LogView(props) {
                     </div>
                 </div>
             </AccordionSummary>
-            <AccordionDetails>
-                <code className={classes.log}>
-                    <pre className={classes.pre}>
-                        <FixedSizeList 
-                            height={500}
-                            itemCount={lineCount}
-                            itemSize={20}
-                            style={{overflow: "scroll"}}
-                        >
-                            {Line}
-                        </FixedSizeList>
-                    </pre>
-                </code>
+            <AccordionDetails className={classes.accordiondetails}>
+                <SearchBar 
+                    className={classes.grow} 
+                    pos={cursor + 1} 
+                    count={indices.length} 
+                    onNext={nextResult} 
+                    onPrev={previousResult} 
+                    onCancel={onCancelQuery}
+                    handlePerformQuery={onPerformQuery} 
+                />
+                <LogLines lines={lines} query={query} scrollTo={scrollTo} language={props.language} />
             </AccordionDetails>
         </Accordion>
     )
