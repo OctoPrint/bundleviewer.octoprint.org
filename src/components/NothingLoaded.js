@@ -18,7 +18,7 @@ export default function NothingLoaded(props) {
         <div style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
             <DropzoneArea
                 style={{"flex-basis": "100%"}}
-                dropzoneText="Enter an URL for a bundle above and press Enter, or drag and drop a file here or click to upload one"
+                dropzoneText="Enter an URL above and press Enter, or drag and drop a file here or click to upload one"
                 onChange={handleChange}
                 filesLimit={1} 
                 acceptedFiles={[".zip", ".log", ".txt"]}

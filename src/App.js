@@ -204,8 +204,9 @@ export default function App(props) {
         return (
           <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Could not load bundle or single log. Make sure you are trying to load either an OctoPrint
-              Systeminfo Bundle (zip) or a single plain text log file. Other files are not supported.
+              Could not load file. Make sure you are trying to load either an OctoPrint 
+              systeminfo bundle, a zip containing logs, or a plain text log file. 
+              Other files are not supported.
           </Alert>
         )
       } else if (loading) {

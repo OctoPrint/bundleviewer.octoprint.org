@@ -3,23 +3,31 @@ import ziputils from "./zip";
 async function loadBundle(zip) {
     const files = ["octoprint.log", "serial.log", "terminal.txt", "plugin_softwareupdate_console.log", "plugin_pluginmanager_console.log"];
 
-    const systeminfo = await ziputils.getFileContents(zip, "systeminfo.txt", "string");
-    if (!systeminfo) {
-        throw new Error("No systeminfo.txt found");
+    let systeminfo = false;
+    try {
+        systeminfo = await ziputils.getFileContents(zip, "systeminfo.txt", "string");
+    } catch(error) {
+        console.log("Could not read systeminfo.txt from zip, probably not a bundle...");
     }
 
     const contents = {};
-    for (const filename of files) {
+    for (const f of zip.file(/\.(log|txt|gcode|gco|g)$/i)) {
+        if (f.name.startsWith(".") || f.name.startsWith("__")) continue;
         try {
-            contents[filename] = await ziputils.getFileContents(zip, filename, "string");
+            contents[f.name] = await f.async("string");
         } catch(error) {
-            console.log(`No ${filename} in zip...`);
+            console.log(`Could not read {f.name} from zip...`);
         }
     }
 
     const logs = [];
     for (const filename of files) {
         if (contents[filename]) {
+            logs.push({ log: filename, content: contents[filename] });
+        }
+    }
+    for (const filename of Object.keys(contents).sort()) {
+        if (!files.includes(filename)) {
             logs.push({ log: filename, content: contents[filename] });
         }
     }
