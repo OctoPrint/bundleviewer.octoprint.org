@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Bundle Viewer",
+  "name": "OctoPrint Bundle Viewer",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,6 +18,12 @@
       "sizes": "512x512"
     }
   ],
+  "share_target": {
+    "action": "/",
+    "params": {
+      "url": "url"
+    }
+  },
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
