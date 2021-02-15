@@ -32,7 +32,7 @@ const guessLanguage = (filename) => {
 export default function LogView(props) {
     const log = props.log;
     const content = props.content;
-    const lines = content.trim().split("\n");
+    const lines = content.trim().split("\n").map((line) => (line.trimEnd() + "\n"));
     const lineCount = lines.length;
 
     const [query, setQuery] = useState("");
