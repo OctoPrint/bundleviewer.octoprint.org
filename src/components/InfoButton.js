@@ -53,7 +53,7 @@ export default function InfoButton(props) {
                         Its source code can be found on <Link href="https://github.com/OctoPrint/Open-in-Bundle-Viewer" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">github.com/OctoPrint/Open-in-Bundle-Viewer</Link>.
                     </p>
                     <p>
-                        There's also an accompanying <Link href="" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">forum thread</Link>.
+                        There's also an accompanying <Link href="https://community.octoprint.org/t/open-in-bundle-viewer-browser-extension/30275" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">forum thread</Link>.
                     </p>
                 </DialogContent>
                 <DialogActions>
