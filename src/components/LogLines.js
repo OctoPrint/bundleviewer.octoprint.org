@@ -12,7 +12,7 @@ export default function LogLines(props) {
     const listRef = React.createRef();
     useEffect(() => {
         if (scrollTo > -1) {
-            listRef.current.scrollToItem(scrollTo, "center");
+            listRef.current?.scrollToItem(scrollTo, "center");
         }
     }, [listRef, scrollTo]);
 
