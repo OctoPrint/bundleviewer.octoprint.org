@@ -12,7 +12,7 @@ async function loadBundle(zip) {
 
     const contents = {};
     for (const f of zip.file(/\.(log|txt|gcode|gco|g)$/i)) {
-        if (f.name.startsWith(".") || f.name.startsWith("__")) continue;
+        if (f.name.startsWith(".") || f.name.startsWith("__") || f.name === "systeminfo.txt") continue;
         try {
             contents[f.name] = await f.async("string");
         } catch(error) {
