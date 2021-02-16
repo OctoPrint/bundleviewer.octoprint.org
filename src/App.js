@@ -9,16 +9,17 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Container from "@material-ui/core/Container";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
-import GitHubIcon from "@material-ui/icons/GitHub";
 import HomeIcon from "@material-ui/icons/Home";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Link from "@material-ui/core/Link";
 
 import { SnackbarProvider } from "notistack";
 
 import DarkModeToggle from "./components/DarkModeToggle";
 import UrlBar from "./components/UrlBar";
 import ShareButton from "./components/ShareButton";
+import InfoButton from "./components/InfoButton";
 import BundleView from "./components/BundleView";
 import NothingLoaded from "./components/NothingLoaded";
 
@@ -75,6 +76,10 @@ const useStyles = makeStyles(theme => ({
       },
       paddingBottom: theme.spacing(4)
     },
+    footer: {
+      textAlign: "center",
+      padding: "1em",
+    }
 }));
 
 function corsRewrite(url) {
@@ -243,12 +248,8 @@ export default function App(props) {
                 <UrlBar url={url} filename={filename} handleUrlChange={handleUrlChange} />
               </div>
               {url ? <ShareButton url={url} /> : null}
+              <InfoButton />
               <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
-              <Hidden xsDown>
-                <IconButton href="https://github.com/OctoPrint/bundleviewer.octoprint.org" target="_blank" color="inherit">
-                  <GitHubIcon />
-                </IconButton>
-              </Hidden>
           </Toolbar>
         </AppBar>
       )
@@ -257,7 +258,7 @@ export default function App(props) {
     return (
         <ThemeProvider theme={darkModeTheme}>
           <SnackbarProvider>
-            <div className={classes.root} style={{display: "flex"}}>
+            <div className={classes.root} style={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
                 <CssBaseline />
                 <Navbar />
                 <main className={classes.content}>
@@ -265,6 +266,9 @@ export default function App(props) {
                       <MainView />
                     </Container>
                 </main>
+                <footer className={classes.footer}>
+                  © 2021 <Link href="https://octoprint.org" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">OctoPrint</Link> &middot; <Link href="https://octoprint.org/imprint/" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">Imprint</Link> &middot; <Link href="https://octoprint.org/privacy/" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">Privacy Policy</Link>
+                </footer>
             </div>
           </SnackbarProvider>
         </ThemeProvider>
