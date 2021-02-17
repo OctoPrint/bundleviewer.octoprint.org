@@ -70,6 +70,9 @@ const useStyles = makeStyles(theme => ({
       }
     },
     container: {
+      minHeight: "100%", 
+      display: "flex", 
+      flexDirection: "column",
       paddingTop: theme.spacing(4),
       [theme.breakpoints.down('md')]: {
         paddingTop: 0,
