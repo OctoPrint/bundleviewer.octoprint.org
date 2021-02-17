@@ -138,7 +138,7 @@ export default function LogView(props) {
     };
 
     const serialAndDisabled = (log === "serial.log" && lineCount === 1 && lines[0].includes("serial.log is currently not enabled"));
-    const throttled = content.includes("!!! UNDERVOLTAGE REPORTED !!!");
+    const throttled = content.includes("!!! UNDERVOLTAGE REPORTED !!!") || content.includes("!!! FREQUENCY CAPPING DUE TO OVERHEATING REPORTED !!!");
 
     return (
         <Accordion key={log} defaultExpanded={props.expanded}>
