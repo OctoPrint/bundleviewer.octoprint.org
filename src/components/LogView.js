@@ -9,6 +9,7 @@ import SearchBar from "./SearchBar";
 import LogLines from "./LogLines";
 
 import ErrorIcon from "mdi-react/ErrorIcon";
+import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
 
 import millify from "millify";
 
@@ -32,7 +33,7 @@ const guessLanguage = (filename) => {
 export default function LogView(props) {
     const log = props.log;
     const content = props.content;
-    const lines = content.trim().split("\n").map((line) => (line.trimEnd() + "\n"));
+    const lines = content.trim().replace("\r\n", "\n").split("\n").map((line) => (line + "\n"));
     const lineCount = lines.length;
 
     const [query, setQuery] = useState("");
@@ -137,6 +138,7 @@ export default function LogView(props) {
     };
 
     const serialAndDisabled = (log === "serial.log" && lineCount === 1 && lines[0].includes("serial.log is currently not enabled"));
+    const throttled = content.includes("!!! UNDERVOLTAGE REPORTED !!!");
 
     return (
         <Accordion key={log} defaultExpanded={props.expanded}>
@@ -145,6 +147,7 @@ export default function LogView(props) {
                     <div className={classes.title}>
                         <Typography className={classes.heading} style={{ display: "flex", alignItems: "center" }}>
                             {log}
+                            {throttled ? <ThrottledIcon className={classes.icon} size="1.5em" /> : (null)}
                             {serialAndDisabled ? <ErrorIcon className={classes.icon} size="1.5em" /> : (null)}
                         </Typography>
                     </div>
