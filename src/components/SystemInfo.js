@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SystemInfo(props) {
     const lines = props.info.split("\n").filter(l => l.trim() !== "").map(l => {
         const [key, ...value] = l.split(":");
-        return { key: key, value: value }
+        return { key: key, value: value.join(":") }
     });
 
     const info = {};
