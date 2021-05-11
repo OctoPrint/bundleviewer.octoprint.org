@@ -20,6 +20,7 @@
   ],
   "share_target": {
     "action": "/",
+    "method": "GET",
     "params": {
       "url": "url"
     }
