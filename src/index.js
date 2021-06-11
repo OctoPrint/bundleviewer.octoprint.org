@@ -7,7 +7,7 @@ const search = window.location.search;
 const params = new URLSearchParams(search);
 
 let url = params.get('url', '');
-if (url === '') {
+if (url === null || url === '') {
   // https://bugs.chromium.org/p/chromium/issues/detail?id=789379
   const match = params.get('text', '').match(/https?:\/\/[^\s]+/gi)
   if (match) {
