@@ -20,6 +20,7 @@ import DarkModeToggle from "./components/DarkModeToggle";
 import UrlBar from "./components/UrlBar";
 import ShareButton from "./components/ShareButton";
 import InfoButton from "./components/InfoButton";
+import DebugButton from "./components/DebugButton";
 import BundleView from "./components/BundleView";
 import NothingLoaded from "./components/NothingLoaded";
 
@@ -252,6 +253,7 @@ export default function App(props) {
               </div>
               {url ? <ShareButton url={url} /> : null}
               <InfoButton />
+              <DebugButton url={url} shared={props.shared} />
               <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
           </Toolbar>
         </AppBar>
