@@ -6,7 +6,14 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 const search = window.location.search;
 const params = new URLSearchParams(search);
 
-const url = params.get('url', '');
+let url = params.get('url', '');
+if (url === '') {
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=789379
+  const match = params.get('text', '').match(/https?:\/\/[^\s]+/gi)
+  if (match) {
+    url = match[0];
+  }
+}
 
 console.log("URL", url);
 
