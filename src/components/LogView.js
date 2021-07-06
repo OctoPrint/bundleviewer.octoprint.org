@@ -15,7 +15,8 @@ import millify from "millify";
 
 const languages = [
     { language: "cli", patterns: [/^.*_console.*\.log$/]},
-    { language: "log", patterns: [/^.*\.log$/] }
+    { language: "updatelog", patterns: [/^.*_update\.log$/] },
+    { language: "log", patterns: [/^.*\.log$/] },
 ]
 
 const guessLanguage = (filename) => {

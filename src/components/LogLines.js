@@ -57,6 +57,9 @@ export default function LogLines(props) {
             "&[data-stream=\"stderr\"]": {
                 "color": theme.palette.error.main
             },
+            "&[data-updateresult=\"FAILED\"]": {
+                "color": theme.palette.error.main
+            },
         },
     }))();
 
@@ -75,6 +78,16 @@ export default function LogLines(props) {
         }
     }
 
+    const getUpdateResult = (line) => {
+        if (line.includes("- FAILED -")) {
+            return "FAILED";
+        } else if (line.includes("- SUCCESS -")) {
+            return "SUCCESS";
+        } else {
+            return "PLAIN";
+        }
+    }
+
     const matchesQuery = (line) => {
         return query && line && line.toLowerCase().includes(queryLower);
     }
@@ -85,7 +98,11 @@ export default function LogLines(props) {
 
     const CliLine = ({ index, style }) => (
         <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
-    )
+    );
+
+    const UpdatelogLine = ({ index, style }) => (
+        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-updateresult={getUpdateResult(lines[index])} className={classes.line}>{lines[index]}</span></span>
+    );
 
     const PlainLine = ({ index, style }) => (
         <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
@@ -99,6 +116,10 @@ export default function LogLines(props) {
         }
         case "cli": {
             Line = CliLine;
+            break;
+        }
+        case "updatelog": {
+            Line = UpdatelogLine;
             break;
         }
         default: {
