@@ -98,7 +98,7 @@ function corsRewrite(url) {
 }
 
 export default function App(props) {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)', { noSsr: true });
     const [darkMode, setDarkMode] = useLocalStorage("enableDarkMode", prefersDarkMode);
 
     const [url, setUrl] = useState(props.url);
