@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DarkModeIcon from "@material-ui/icons/Brightness4";
-import LightModeIcon from "@material-ui/icons/Brightness7";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import DarkModeIcon from "@mui/icons-material/Brightness4";
+import LightModeIcon from "@mui/icons-material/Brightness7";
 
 export default function DarkModeToggle(props) {
     const [darkMode, setDarkMode] = useState(props.darkMode);
@@ -15,9 +15,9 @@ export default function DarkModeToggle(props) {
 
     return (
         <Tooltip title="Toggle dark mode">
-            <IconButton onClick={handleDarkModeToggle} color="inherit">
+            <IconButton onClick={handleDarkModeToggle} color="inherit" size="large">
                 { darkMode ? <LightModeIcon /> : <DarkModeIcon /> }
             </IconButton>
         </Tooltip>
-    )
+    );
 }

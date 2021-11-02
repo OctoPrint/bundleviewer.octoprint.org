@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import { FixedSizeList } from "react-window";
 
 export default function LogLines(props) {
@@ -23,7 +23,7 @@ export default function LogLines(props) {
         pre: {
             margin: 0,
             "font-family": "'JetBrains Mono', 'Droid Sans Mono', monospace",
-            [theme.breakpoints.down('md')]: {
+            [theme.breakpoints.down('lg')]: {
                 fontSize: theme.typography.pxToRem(12),
             }
         },

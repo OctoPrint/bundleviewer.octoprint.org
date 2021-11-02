@@ -1,23 +1,23 @@
 import React from "react";
 
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Typography from "@material-ui/core/Typography";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Typography from "@mui/material/Typography";
 
 import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
 import BugfixIcon from "mdi-react/BugCheckIcon";
 import SafeModeIcon from "mdi-react/LockCheckIcon";
 
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
     accordionbar: {
         display: "flex",
         flexGrow: 1,
         alignItems: "center",
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('lg')]: {
             flexWrap: "wrap",
         },
     },
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.text.secondary,
         padding: theme.spacing(0, 1),
         textAlign: "right",
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('lg')]: {
             textAlign: "left",
             padding: theme.spacing(0, 0),
         },
@@ -41,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1,
         alignItems: "center",
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('lg')]: {
             flexBasis: "100%"
         }
     },
     info: {
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('lg')]: {
             flexBasis: "100%"
         }
     }

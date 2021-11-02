@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
-import ShareIcon from "@material-ui/icons/Share";
+import ShareIcon from "@mui/icons-material/Share";
 
 import { useSnackbar } from "notistack";
 
@@ -46,41 +46,39 @@ export default function ShareButton(props) {
     }
 
     if (true) {
-        return (
-            <>
-            <Tooltip title="Get shareable link">
-                <IconButton onClick={handleShareClick} color="inherit">
-                    <ShareIcon />
-                </IconButton>
-            </Tooltip>
+        return <>
+        <Tooltip title="Get shareable link">
+            <IconButton onClick={handleShareClick} color="inherit" size="large">
+                <ShareIcon />
+            </IconButton>
+        </Tooltip>
 
-            <Dialog open={shareModalOpen} onClose={handleClose} fullWidth>
-                <DialogTitle>Shareable link</DialogTitle>
-                <DialogContent>
-                    <TextField value={shareUrl} InputProps={{ readOnly: true, }} onFocus={event => {event.target.select()}} fullWidth />
-                </DialogContent>
-                <DialogActions>
-                    {(navigator.share) ? 
-                        <Button onClick={handleShare}>
-                            Share
-                        </Button>
-                    :
-                        (null)
-                    }
-                    {(navigator.clipboard) ? 
-                        <Button onClick={handleCopy}>
-                            Copy
-                        </Button>
-                    : 
-                        (null)
-                    }
-                    <Button onClick={handleClose}>
-                        Close
+        <Dialog open={shareModalOpen} onClose={handleClose} fullWidth>
+            <DialogTitle>Shareable link</DialogTitle>
+            <DialogContent>
+                <TextField value={shareUrl} InputProps={{ readOnly: true, }} onFocus={event => {event.target.select()}} fullWidth />
+            </DialogContent>
+            <DialogActions>
+                {(navigator.share) ? 
+                    <Button onClick={handleShare}>
+                        Share
                     </Button>
-                </DialogActions>
-            </Dialog>
-            </>
-        )
+                :
+                    (null)
+                }
+                {(navigator.clipboard) ? 
+                    <Button onClick={handleCopy}>
+                        Copy
+                    </Button>
+                : 
+                    (null)
+                }
+                <Button onClick={handleClose}>
+                    Close
+                </Button>
+            </DialogActions>
+        </Dialog>
+        </>;
     } else {
         return (null)
     }

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { alpha } from "@mui/material/styles";
 
-import InputBase from "@material-ui/core/InputBase";
-import Hidden from "@material-ui/core/Hidden";
-import LinkIcon from "@material-ui/icons/Link";
-import UploadIcon from "@material-ui/icons/CloudUpload";
+import makeStyles from '@mui/styles/makeStyles';
+
+import InputBase from "@mui/material/InputBase";
+import Hidden from "@mui/material/Hidden";
+import LinkIcon from "@mui/icons-material/Link";
+import UploadIcon from "@mui/icons-material/CloudUpload";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -14,9 +16,9 @@ const useStyles = makeStyles(theme => ({
     url: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
+      backgroundColor: alpha(theme.palette.common.white, 0.15),
       "&:hover": {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
       },
       [theme.breakpoints.up('md')]: {
         marginRight: theme.spacing(2),
@@ -40,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     inputInput: {
       padding: theme.spacing(1, 1, 1, 1),
       [theme.breakpoints.up('md')]: {
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       },
       transition: theme.transitions.create('width'),
       width: "100%",
@@ -68,7 +70,7 @@ export default function UrlBar(props) {
 
     return (
         <div className={classes.url}>
-            <Hidden mdDown>
+            <Hidden lgDown>
                 <div className={classes.urlIcon}>
                 {props.filename ? (
                     <UploadIcon />
@@ -89,5 +91,5 @@ export default function UrlBar(props) {
                 inputProps={{ readOnly: mode === "upload", }}
             />
         </div>
-    )
+    );
 }

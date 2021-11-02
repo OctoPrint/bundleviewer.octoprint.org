@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { makeStyles } from "@material-ui/core/styles";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import { CssBaseline } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Container from "@material-ui/core/Container";
-import IconButton from "@material-ui/core/IconButton";
-import Hidden from "@material-ui/core/Hidden";
-import HomeIcon from "@material-ui/icons/Home";
-import { Alert, AlertTitle } from '@material-ui/lab';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Link from "@material-ui/core/Link";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { adaptV4Theme } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import { createTheme, ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Container from "@mui/material/Container";
+import IconButton from "@mui/material/IconButton";
+import Hidden from "@mui/material/Hidden";
+import HomeIcon from "@mui/icons-material/Home";
+import { Alert, AlertTitle } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Link from "@mui/material/Link";
 
 import { SnackbarProvider } from "notistack";
 
@@ -43,14 +44,14 @@ const useStyles = makeStyles(theme => ({
     appBar: {
     },
     toolbar: {
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down('lg')]: {
         "justify-content": "flex-end",
         "flex-wrap": "wrap",
       }
     },
     urlbar: {
       flexGrow: 1,
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down('lg')]: {
         "flex-basis": "100%",
         order: 99,
         paddingBottom: theme.spacing(2)
@@ -66,7 +67,7 @@ const useStyles = makeStyles(theme => ({
       flexGrow: 1,
       overflow: "auto",
       "padding-top": theme.mixins.toolbar.minHeight,
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down('lg')]: {
         "padding-top": theme.mixins.toolbar.minHeight * 2,
       }
     },
@@ -75,7 +76,7 @@ const useStyles = makeStyles(theme => ({
       display: "flex", 
       flexDirection: "column",
       paddingTop: theme.spacing(4),
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down('lg')]: {
         paddingTop: 0,
       },
       paddingBottom: theme.spacing(4)
@@ -109,11 +110,11 @@ export default function App(props) {
     const [loading, setLoading] = useState(false);
 
     const pallet = darkMode ? "dark" : "light";
-    const darkModeTheme = createMuiTheme({
+    const darkModeTheme = createTheme(adaptV4Theme({
         palette: {
-            type: pallet
+            mode: pallet
         }
-    });
+    }));
 
     const handleDarkModeToggle = () => {
         setDarkMode(!darkMode);
@@ -205,77 +206,98 @@ export default function App(props) {
       window.history.replaceState({}, '', windowUrl);
     }
 
-    const classes = useStyles();
-
-    const MainView = () => {
-      if (error) {
-        console.log("Rendering error screen");
-        return (
-          <Alert severity="error">
-              <AlertTitle>Error</AlertTitle>
-              Could not load file. Make sure you are trying to load either an OctoPrint 
-              systeminfo bundle, a zip containing logs, or a plain text log file. 
-              Other files are not supported.
-          </Alert>
-        )
-      } else if (loading) {
-        console.log("Rendering loading screen");
-        return (
-          <div style={{ display: "flex", justifyContent: "center", }}>
-              <CircularProgress />
-          </div>
-        )
-      } else if (bundle.hasContent) {
-        console.log("Rendering bundle");
-        return (
-          <BundleView bundle={bundle} />
-        )
-      } else {
-        console.log("Rendering empty");
-        return (
-          <NothingLoaded onUpload={handleUpload} />
-        )
-      }
-    }
-
-    const Navbar = () => {
-      return (
-        <AppBar className={classes.appBar}>
-          <Toolbar className={classes.toolbar}>
-              <IconButton onClick={handleReset} color="inherit">
-                <HomeIcon />
-              </IconButton>
-              <Hidden mdUp>
-                <div className={classes.grow} />
-              </Hidden>
-              <div className={classes.urlbar}>
-                <UrlBar url={url} filename={filename} handleUrlChange={handleUrlChange} />
-              </div>
-              {url ? <ShareButton url={url} /> : null}
-              <InfoButton />
-              <DebugButton url={url} shared={props.shared} />
-              <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
-          </Toolbar>
-        </AppBar>
-      )
-    }
-
     return (
+      <StyledEngineProvider injectFirst>
         <ThemeProvider theme={darkModeTheme}>
           <SnackbarProvider>
-            <div className={classes.root} style={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
-                <CssBaseline />
-                <Navbar />
-                <main className={classes.content}>
-                    <Container maxWidth="lg" className={classes.container}>
-                      <MainView />
-                    </Container>
-                </main>
-                <footer className={classes.footer}>
-                  © 2021 <Link href="https://octoprint.org" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">OctoPrint</Link> &middot; <Link href="https://octoprint.org/imprint/" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">Imprint</Link> &middot; <Link href="https://octoprint.org/privacy/" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">Privacy Policy</Link>
-                </footer>
-            </div>
+            <Main 
+              bundle={bundle}
+              url={url}
+              filename={filename}
+              error={error}
+              loading={loading}
+              shared={props.shared}
+              handleUpload={handleUpload}
+              handleReset={handleReset}
+              handleUrlChange={handleUrlChange}
+              darkMode={darkMode}
+              handleDarkModeToggle={handleDarkModeToggle}
+              />
           </SnackbarProvider>
         </ThemeProvider>
-    )
+      </StyledEngineProvider>
+    );
+}
+
+function Main({  bundle, url, filename, error, loading, shared, handleUpload, handleReset, handleUrlChange, darkMode, handleDarkModeToggle }) {
+  const classes = useStyles();
+
+  const MainView = () => {
+    if (error) {
+      console.log("Rendering error screen");
+      return (
+        <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            Could not load file. Make sure you are trying to load either an OctoPrint 
+            systeminfo bundle, a zip containing logs, or a plain text log file. 
+            Other files are not supported.
+        </Alert>
+      )
+    } else if (loading) {
+      console.log("Rendering loading screen");
+      return (
+        <div style={{ display: "flex", justifyContent: "center", }}>
+            <CircularProgress />
+        </div>
+      )
+    } else if (bundle.hasContent) {
+      console.log("Rendering bundle");
+      return (
+        <BundleView bundle={bundle} />
+      )
+    } else {
+      console.log("Rendering empty");
+      return (
+        <NothingLoaded onUpload={handleUpload} />
+      )
+    }
+  }
+
+  const Navbar = () => {
+    return (
+      <AppBar className={classes.appBar}>
+        <Toolbar className={classes.toolbar}>
+          <IconButton onClick={handleReset} color="inherit" size="large">
+            <HomeIcon />
+          </IconButton>
+          <Hidden mdUp>
+            <div className={classes.grow} />
+          </Hidden>
+          <div className={classes.urlbar}>
+            <UrlBar url={url} filename={filename} handleUrlChange={handleUrlChange} />
+          </div>
+          {url ? <ShareButton url={url} /> : null}
+          <InfoButton />
+          <DebugButton url={url} shared={shared} />
+          <DarkModeToggle darkMode={darkMode} onChange={handleDarkModeToggle} />
+        </Toolbar>
+      </AppBar>
+    );
+  }
+
+
+  return (
+    <div className={classes.root} style={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
+      <CssBaseline />
+      <Navbar />
+      <main className={classes.content}>
+        <Container maxWidth="lg" className={classes.container}>
+          <MainView />
+        </Container>
+      </main>
+      <footer className={classes.footer}>
+        © 2021 <Link href="https://octoprint.org" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">OctoPrint</Link> &middot; <Link href="https://octoprint.org/imprint/" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">Imprint</Link> &middot; <Link href="https://octoprint.org/privacy/" target="_blank" rel="noreferrer noopener" color="inherit" underline="always">Privacy Policy</Link>
+      </footer>
+    </div>
+  );
 }

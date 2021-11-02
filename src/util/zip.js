@@ -11,7 +11,7 @@ async function loadZip(blob) {
 }
 
 async function containsFile(zip, filename) {
-    return await zip.file(filename) !== null;
+    return (await zip.file(filename)) !== null;
 }
 
 async function getFileContents(zip, filename, format) {
