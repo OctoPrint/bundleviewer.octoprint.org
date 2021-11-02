@@ -8,6 +8,7 @@ import { CssBaseline } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Hidden from "@mui/material/Hidden";
 import HomeIcon from "@mui/icons-material/Home";
@@ -125,6 +126,11 @@ export default function App(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const notistackRef = React.createRef();
+    const dismissSnack = (key) => () => {
+      notistackRef.current.closeSnackbar(key);
+    }
+
     const handleUrlChange = (newUrl) => {
       if (!newUrl) {
         handleReset();
@@ -194,6 +200,7 @@ export default function App(props) {
       setLoading(false);
       setBundle(bundleutils.defaultBundle);
       updateHistory();
+      notistackRef.current.closeSnackbar();
     }
 
     const updateHistory = (newUrl) => {
@@ -209,7 +216,20 @@ export default function App(props) {
     return (
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={darkModeTheme}>
-          <SnackbarProvider>
+          <SnackbarProvider
+            ref={notistackRef}
+            action={(key) => (
+              <Button onClick={dismissSnack(key)}>
+                Close
+              </Button>
+            )}
+            maxSnack={5}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            dense
+            preventDuplicate>
             <Main 
               bundle={bundle}
               url={url}

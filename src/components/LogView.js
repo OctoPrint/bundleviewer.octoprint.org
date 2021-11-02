@@ -11,6 +11,8 @@ import LogLines from "./LogLines";
 import ErrorIcon from "mdi-react/ErrorIcon";
 import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
 
+import { useSnackbar } from "notistack";
+
 import millify from "millify";
 
 const languages = [
@@ -32,6 +34,8 @@ const guessLanguage = (filename) => {
 }
 
 export default function LogView(props) {
+    const { enqueueSnackbar } = useSnackbar();
+
     const log = props.log;
     const content = props.content;
     const lines = content.trim().split("\n").map((line) => (line.trimEnd() + "\n"));
@@ -139,7 +143,22 @@ export default function LogView(props) {
     };
 
     const serialAndDisabled = (log === "serial.log" && lineCount === 1 && lines[0].includes("serial.log is currently not enabled"));
-    const throttled = content.includes("!!! UNDERVOLTAGE REPORTED !!!") || content.includes("!!! FREQUENCY CAPPING DUE TO OVERHEATING REPORTED !!!");
+    const undervoltage = content.includes("!!! UNDERVOLTAGE REPORTED !!!");
+    const overheating = content.includes("!!! FREQUENCY CAPPING DUE TO OVERHEATING REPORTED !!!");
+    const throttled = undervoltage || overheating;
+
+    const piSupportLines = lines.filter(line => line.includes("|  Pi Support Plugin") || line.includes("| !Pi Support Plugin"));
+    const piSupportDisabled = piSupportLines.length && piSupportLines[piSupportLines.length - 1].includes("| !Pi Support Plugin");
+
+    if (serialAndDisabled) {
+        enqueueSnackbar("Serial log is currently not enabled. Should be enabled when reporting issues with the printer.", { variant: "info" });
+    }
+    if (piSupportDisabled) {
+        enqueueSnackbar("Pi Support Plugin disabled in the log, there might be an undetected undervoltage or overheating situation!", { variant: "error", persist: true, key: "pi_support_disabled" });
+    }
+    if (throttled) {
+        enqueueSnackbar("System is or was throttled, system may behave erratically. Fix before further debugging.", { variant: "error", persist: true, key: "throttled" });
+    }
 
     return (
         <Accordion key={log} defaultExpanded={props.expanded}>
