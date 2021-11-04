@@ -205,7 +205,7 @@ export default function App(props) {
       setLoading(false);
       setBundle(bundleutils.defaultBundle);
       updateHistory();
-      notistackRef.current.closeSnackbar();
+      if (notistackRef.current) notistackRef.current.closeSnackbar();
     }
 
     const updateHistory = (newUrl) => {
