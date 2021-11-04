@@ -18,6 +18,9 @@ import Link from "@mui/material/Link";
 
 import { SnackbarProvider } from "notistack";
 
+import CacheBuster from "react-cache-buster";
+import { version } from "../package.json";
+
 import DarkModeToggle from "./components/DarkModeToggle";
 import UrlBar from "./components/UrlBar";
 import ShareButton from "./components/ShareButton";
@@ -117,6 +120,8 @@ export default function App(props) {
         }
     }));
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     const handleDarkModeToggle = () => {
         setDarkMode(!darkMode);
     }
@@ -214,38 +219,40 @@ export default function App(props) {
     }
 
     return (
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={darkModeTheme}>
-          <SnackbarProvider
-            ref={notistackRef}
-            action={(key) => (
-              <Button onClick={dismissSnack(key)}>
-                Close
-              </Button>
-            )}
-            maxSnack={5}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            dense
-            preventDuplicate>
-            <Main 
-              bundle={bundle}
-              url={url}
-              filename={filename}
-              error={error}
-              loading={loading}
-              shared={props.shared}
-              handleUpload={handleUpload}
-              handleReset={handleReset}
-              handleUrlChange={handleUrlChange}
-              darkMode={darkMode}
-              handleDarkModeToggle={handleDarkModeToggle}
-              />
-          </SnackbarProvider>
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <CacheBuster currentVersion={version} isEnabled={isProduction} isVerboseMode={true}>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={darkModeTheme}>
+            <SnackbarProvider
+              ref={notistackRef}
+              action={(key) => (
+                <Button onClick={dismissSnack(key)}>
+                  Close
+                </Button>
+              )}
+              maxSnack={5}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              dense
+              preventDuplicate>
+              <Main 
+                bundle={bundle}
+                url={url}
+                filename={filename}
+                error={error}
+                loading={loading}
+                shared={props.shared}
+                handleUpload={handleUpload}
+                handleReset={handleReset}
+                handleUrlChange={handleUrlChange}
+                darkMode={darkMode}
+                handleDarkModeToggle={handleDarkModeToggle}
+                />
+            </SnackbarProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </CacheBuster>
     );
 }
 
