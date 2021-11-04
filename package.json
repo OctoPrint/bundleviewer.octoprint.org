@@ -27,6 +27,7 @@
     "react-scripts": "4.0.1",
     "react-window": "^1.8.6",
     "request": "^2.88.2",
+    "semver": "^7.3.2",
     "style-it": "^2.1.4",
     "web-vitals": "^0.2.4"
   },
