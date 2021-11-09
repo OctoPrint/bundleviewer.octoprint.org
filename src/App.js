@@ -229,7 +229,7 @@ export default function App(props) {
                   Close
                 </Button>
               )}
-              maxSnack={5}
+              maxSnack={10}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'center',

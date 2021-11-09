@@ -16,6 +16,8 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import semver from "semver";
 
+import timeutils from "../util/time";
+
 const UNRECOMMENDED_MODELS = ["Zero", "Zero W"]
 
 const useStyles = makeStyles((theme) => ({
@@ -98,6 +100,30 @@ export default function SystemInfo(props) {
         return false;
     }
 
+    const checkLastSafeMode = () => {
+        const last_safe_mode_date = info["octoprint.last_safe_mode.date"];
+        const generation_date = info["systeminfo.generated"];
+
+        if (!last_safe_mode_date || !generation_date) {
+            return;
+        }
+
+        if (last_safe_mode_date === "unknown") {
+            enqueueSnackbar("Last start in safe mode is unknown", { key: "last_safe_mode", variant: "warning", persist: true });
+            return;
+        }
+
+        const last_safe_mode_date_obj = new Date();
+        const generation_date_obj = new Date();
+
+        last_safe_mode_date_obj.setTime(Date.parse(last_safe_mode_date.trim()));
+        generation_date_obj.setTime(Date.parse(generation_date.trim()));
+
+        const formattedDiff = timeutils.formatTimeDiff(timeutils.diffInSeconds(last_safe_mode_date_obj, generation_date_obj));
+
+        enqueueSnackbar(`Last start in safe mode was ${formattedDiff} ago`, { key: "last_safe_mode", variant: "info", persist: true });
+    }
+
     const safemode = checkField("octoprint.safe_mode", value => (value === "true"));
     const throttled = checkField("env.plugins.pi_support.throttle_state", value => (value.trim() !== "0x0"));
     const marlin_bugfix = checkField("printer.firmware", value => (value.includes("Marlin bugfix-")));
@@ -127,6 +153,7 @@ export default function SystemInfo(props) {
     if (setuptools_too_old) {
         enqueueSnackbar("Setuptools version is too old for automatic updating.", { key: "setuptools_too_old", variant: "error", persist: true });
     }
+    checkLastSafeMode();
 
     return (
         <Accordion defaultExpanded>
