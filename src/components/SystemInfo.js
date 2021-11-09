@@ -109,7 +109,7 @@ export default function SystemInfo(props) {
         }
 
         if (last_safe_mode_date === "unknown") {
-            enqueueSnackbar("Last start in safe mode is unknown", { key: "last_safe_mode", variant: "warning", persist: true });
+            enqueueSnackbar("Last start in safe mode is unknown.", { key: "last_safe_mode", variant: "warning", persist: true });
             return;
         }
 
@@ -121,7 +121,7 @@ export default function SystemInfo(props) {
 
         const formattedDiff = timeutils.formatTimeDiff(timeutils.diffInSeconds(last_safe_mode_date_obj, generation_date_obj));
 
-        enqueueSnackbar(`Last start in safe mode was ${formattedDiff} ago`, { key: "last_safe_mode", variant: "info", persist: true });
+        enqueueSnackbar(`Last start in safe mode was ${formattedDiff} before bundle creation.`, { key: "last_safe_mode", variant: "info", persist: true });
     }
 
     const safemode = checkField("octoprint.safe_mode", value => (value === "true"));
