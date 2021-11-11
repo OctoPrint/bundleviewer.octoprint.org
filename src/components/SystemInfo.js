@@ -128,7 +128,7 @@ export default function SystemInfo(props) {
     const throttled = checkField("env.plugins.pi_support.throttle_state", value => (value.trim() !== "0x0"));
     const marlin_bugfix = checkField("printer.firmware", value => (value.includes("Marlin bugfix-")));
     const unrecommended_model = checkField("env.plugins.pi_support.model", value => (checkModel(value)));
-    const python_too_old = checkField("env.python.version", value => (!semver.satisfies(value, ">=2.7.13 <3 || >=3.7")));
+    const python_too_old = checkField("env.python.version", value => (!semver.satisfies(value, ">=2.7.13 <3 || >=3.6")));
     const pip_too_old = checkField("env.python.pip", value => (!semver.satisfies(value, ">=19.0.1")));
     const setuptools_too_old = checkField("env.python.setuptools", value => (!semver.satisfies(value, ">=40.7.1")));
 
