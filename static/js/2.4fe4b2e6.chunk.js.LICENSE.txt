@@ -25,6 +25,8 @@ object-assign
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
 /**
  * A better abstraction over CSS.
  *
@@ -33,7 +35,7 @@ object-assign
  * @license MIT
  */
 
-/** @license MUI v5.1.0
+/** @license MUI v5.3.0
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
