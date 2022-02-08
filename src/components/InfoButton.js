@@ -42,6 +42,10 @@ export default function InfoButton(props) {
                 </p>
                 <hr />
                 <p>
+                    Bundleviewer can be installed as a PWA and used a share target on Android.
+                </p>
+                <hr />
+                <p>
                     There's an accompanying web extension for Firefox and Chrome to add an "Open in Bundle Viewer" context menu to links in the browser on 
                     associated websites:
                 </p>
