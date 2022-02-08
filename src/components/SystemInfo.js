@@ -128,10 +128,11 @@ export default function SystemInfo(props) {
     const throttled = checkField("env.plugins.pi_support.throttle_state", value => (value.trim() !== "0x0"));
     const marlin_bugfix = checkField("printer.firmware", value => (value.includes("Marlin bugfix-")));
     const unrecommended_model = checkField("env.plugins.pi_support.model", value => (checkModel(value)));
-    const still_python_2 = checkField("env.python.version", value => (value.startsWith("2.")));
-    const python_too_old = checkField("env.python.version", value => (!semver.satisfies(value, ">=2.7.13 <3 || >=3.6")));
+    const still_python_2 = checkField("env.python.version", value => (!semver.satisfies(value, ">=3.7")));
+    const python_too_old = checkField("env.python.version", value => (!semver.satisfies(value, ">=2.7.13 <3 || >=3.7")));
     const pip_too_old = checkField("env.python.pip", value => (!semver.satisfies(value, ">=19.0.1")));
     const setuptools_too_old = checkField("env.python.setuptools", value => (!semver.satisfies(value, ">=40.7.1")));
+    const issue_4392 = checkField("octoprint.version", value => (semver.satisfies(value, "<1.8.0"))) && checkField("env.python.pip", value => (semver.satisfies(value, ">=22")));
 
     if (safemode) {
         enqueueSnackbar("Safe mode enabled.", { key: "safemode" });
@@ -146,7 +147,7 @@ export default function SystemInfo(props) {
         enqueueSnackbar("Unrecommended Raspberry Pi model detected.", { key: "unrecommended_model", variant: "error", persist: true });
     }
     if (still_python_2) {
-        enqueueSnackbar("OctoPrint is still running under Python 2", { key: "still_python_2", persist: true });
+        enqueueSnackbar("OctoPrint is still running under Python 2", { key: "still_python_2", variant: "warning", persist: true });
     }
     if (python_too_old) {
         enqueueSnackbar("Python version is too old for automatic updating.", { key: "python_too_old", variant: "error", persist: true });
@@ -156,6 +157,9 @@ export default function SystemInfo(props) {
     }
     if (setuptools_too_old) {
         enqueueSnackbar("Setuptools version is too old for automatic updating.", { key: "setuptools_too_old", variant: "error", persist: true });
+    }
+    if (issue_4392) {
+        enqueueSnackbar("Susceptible for update/plugin install issue #4392", { key: "issue_4392" });
     }
     checkLastSafeMode();
 
