@@ -42,6 +42,8 @@ export default function LogView(props) {
     const lineCount = lines.length;
 
     const [query, setQuery] = useState("");
+    const [regexMode, setRegexMode] = useState(false);
+    const [caseSensitive, setCaseSensitive] = useState(false);
     const [scrollTo, setScrollTo] = useState(0);
 
     const [cursor, setCursor] = useState(0);
@@ -100,18 +102,26 @@ export default function LogView(props) {
         setQuery("");
     }
 
-    const onPerformQuery = (q) => {
+    const onPerformQuery = (q, r, cs) => {
         if (!q) return;
 
         console.log("Starting query:", q);
-        if (q !== query) {
-            console.log("... calculate matches");
+        if (q !== query || r !== regexMode || cs !== caseSensitive) {
+            console.log(`... calculate matches for "${q}", regex: ${r}, case sensitive: ${cs}`);
             const qLower = q.toLowerCase();
-            const ind = lines.reduce((a, c, i) => {
-                if (c.toLowerCase().includes(qLower)) {
-                    a.push(i);
+
+            let matcher;
+            if (r) {
+                matcher = line => line.match(q);
+            } else {
+                matcher = line => line.includes(cs ? q : qLower);
+            }
+
+            const ind = lines.reduce((result, line, index) => {
+                if (matcher(cs ? line : line.toLowerCase())) {
+                    result.push(index);
                 }
-                return a;
+                return result;
             }, []);
 
             if (ind.length) {
@@ -121,6 +131,8 @@ export default function LogView(props) {
             setIndices(ind);
             setCursor(0);
             setQuery(q);
+            setRegexMode(r);
+            setCaseSensitive(cs);
             console.log("Indices:", ind, ", cursor:", 0);
         } else {
             nextResult();
@@ -186,12 +198,13 @@ export default function LogView(props) {
                     className={classes.grow} 
                     pos={cursor + 1} 
                     count={indices.length} 
+                    regexMode={regexMode}
                     onNext={nextResult} 
                     onPrev={previousResult} 
                     onCancel={onCancelQuery}
                     handlePerformQuery={onPerformQuery} 
                 />
-                <LogLines lines={lines} query={query} scrollTo={scrollTo} language={props.language || guessLanguage(log)} />
+                <LogLines lines={lines} highlighted={indices} scrollTo={scrollTo} language={props.language || guessLanguage(log)} />
             </AccordionDetails>
         </Accordion>
     )

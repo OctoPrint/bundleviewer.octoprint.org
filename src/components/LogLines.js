@@ -5,8 +5,8 @@ import { FixedSizeList } from "react-window";
 export default function LogLines(props) {
     const lines = props.lines;
     const lineCount = lines.length;
-    const query = props.query;
-    const queryLower = query.toLowerCase();
+    const highlighted = props.highlighted;
+
     const scrollTo = props.scrollTo;
 
     const listRef = React.createRef();
@@ -88,24 +88,20 @@ export default function LogLines(props) {
         }
     }
 
-    const matchesQuery = (line) => {
-        return query && line && line.toLowerCase().includes(queryLower);
-    }
-
     const LogLine = ({ index, style }) => (
-        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-loglevel={getLoglevel(lines[index])} className={classes.line}>{lines[index]}</span></span>
+        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-loglevel={getLoglevel(lines[index])} className={classes.line}>{lines[index]}</span></span>
     );
 
     const CliLine = ({ index, style }) => (
-        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
+        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
     );
 
     const UpdatelogLine = ({ index, style }) => (
-        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-updateresult={getUpdateResult(lines[index])} className={classes.line}>{lines[index]}</span></span>
+        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-updateresult={getUpdateResult(lines[index])} className={classes.line}>{lines[index]}</span></span>
     );
 
     const PlainLine = ({ index, style }) => (
-        <span data-matched={matchesQuery(lines[index])} style={style} className={classes.linewrap}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
+        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
     );
 
     let Line;

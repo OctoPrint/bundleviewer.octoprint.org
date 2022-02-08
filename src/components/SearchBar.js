@@ -9,6 +9,10 @@ import CancelIcon from "@mui/icons-material/Clear";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
+import Tooltip from "@mui/material/Tooltip";
+
+import RegexIcon from "mdi-material-ui/Regex";
+import CaseIcon from "mdi-material-ui/FormatLetterCase";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -48,29 +52,32 @@ const useStyles = makeStyles(theme => ({
 export default function SearchBar(props) {
     const pos = props.pos;
     const count = props.count;
+    const handlePerformQuery = props.handlePerformQuery;
 
     const classes = useStyles();
 
     const [query, setQuery] = useState(props.query);
+    const [regexMode, setRegexMode] = useState(false);
+    const [caseSensitive, setCaseSensitive] = useState(false);
 
     const inputRef = React.createRef();
 
     const handleChange = (event) => {
-        setQuery(event.target.value);
-        if (props.handleQueryChange) {
-          props.handleQueryChange(query);
-        }
+      setQuery(event.target.value);
+      if (props.handleQueryChange) {
+        props.handleQueryChange(query);
+      }
     }
 
     const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-          handlePerform();
-        }
+      if (event.key === "Enter") {
+        handlePerform();
+      }
     }
 
     const handlePerform = () => {
-      if (props.handlePerformQuery) {
-        props.handlePerformQuery(query);
+      if (handlePerformQuery) {
+        handlePerformQuery(query, regexMode, caseSensitive);
       }
     }
 
@@ -82,18 +89,36 @@ export default function SearchBar(props) {
       }
     }
 
+    const handleToggleRegex = () => {
+      setRegexMode(regexMode => {
+        const result = !regexMode;
+        handlePerformQuery(query, result, caseSensitive);
+        return result;
+      });
+    }
+
+    const handleToggleCaseSensitive = () => {
+      setCaseSensitive(caseSensitive => {
+        const result = !caseSensitive;
+        handlePerformQuery(query, regexMode, result);
+        return result;
+      });
+    }
+
     const SearchStartAdornment = () => (
       <InputAdornment position="start">
-        <IconButton onClick={handlePerform} disabled={query === ""} size="small"><SearchIcon /></IconButton>
+        <Tooltip title="Search"><IconButton onClick={handlePerform} disabled={query === ""} size="small"><SearchIcon /></IconButton></Tooltip>
       </InputAdornment>
     )
 
     const SearchEndAdornment = () => (
       <InputAdornment position="end">
         {count ? <span className={classes.result}>{pos} / {count}</span> : (null)}
-        <IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton>
-        <IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton>
-        <IconButton onClick={handleCancel} disabled={query === ""} size="small"><CancelIcon /></IconButton>
+        <Tooltip title="Toggle regular expression mode"><IconButton onClick={handleToggleRegex} color={regexMode ? 'primary' : 'default'} size="small"><RegexIcon /></IconButton></Tooltip>
+        <Tooltip title="Toggle case sensitivity"><IconButton onClick={handleToggleCaseSensitive} color={caseSensitive ? 'primary' : 'default'} size="small"><CaseIcon /></IconButton></Tooltip>
+        <Tooltip title="Scroll to previous match"><IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton></Tooltip>
+        <Tooltip title="Scroll to next match"><IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton></Tooltip>
+        <Tooltip title="Delete search query"><IconButton onClick={handleCancel} disabled={query === ""} size="small"><CancelIcon /></IconButton></Tooltip>
       </InputAdornment>
     )
 
