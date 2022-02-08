@@ -17,6 +17,7 @@
     "content-type": "^1.0.4",
     "jszip": "^3.5.0",
     "material-ui-dropzone": "github:sah/material-ui-dropzone#mui-v5",
+    "mdi-material-ui": "^7.1.0",
     "mdi-react": "^7.4.0",
     "millify": "^3.5.0",
     "notistack": "^2.0.3",
