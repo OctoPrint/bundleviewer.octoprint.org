@@ -142,7 +142,7 @@ export default function LogView(props) {
         }
     };
 
-    const serialAndDisabled = (log === "serial.log" && lineCount === 1 && lines[0].includes("serial.log is currently not enabled"));
+    const serialAndDisabled = (log === "serial.log" && lines.filter(line => line.trim() && !line.includes("serial.log is currently not enabled")).length === 0);
     const undervoltage = content.includes("!!! UNDERVOLTAGE REPORTED !!!");
     const overheating = content.includes("!!! FREQUENCY CAPPING DUE TO OVERHEATING REPORTED !!!");
     const throttled = undervoltage || overheating;
