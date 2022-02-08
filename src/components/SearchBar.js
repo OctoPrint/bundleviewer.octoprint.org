@@ -91,8 +91,8 @@ export default function SearchBar(props) {
     const SearchEndAdornment = () => (
       <InputAdornment position="end">
         {count ? <span className={classes.result}>{pos} / {count}</span> : (null)}
-        <IconButton onClick={props.onPrev} disabled={count === 0 || pos <= 1} size="small"><PrevIcon /></IconButton>
-        <IconButton onClick={props.onNext} disabled={count === 0 || pos >= count} size="small"><NextIcon /></IconButton>
+        <IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton>
+        <IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton>
         <IconButton onClick={handleCancel} disabled={query === ""} size="small"><CancelIcon /></IconButton>
       </InputAdornment>
     )
