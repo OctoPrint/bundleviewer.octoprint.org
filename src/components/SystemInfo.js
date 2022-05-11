@@ -108,7 +108,7 @@ export default function SystemInfo(props) {
             return;
         }
 
-        if (last_safe_mode_date === "unknown") {
+        if (last_safe_mode_date.trim() === "unknown") {
             enqueueSnackbar("Last start in safe mode is unknown.", { key: "last_safe_mode", variant: "warning", persist: true });
             return;
         }
