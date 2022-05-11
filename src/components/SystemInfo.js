@@ -126,6 +126,7 @@ export default function SystemInfo(props) {
 
     const safemode = checkField("octoprint.safe_mode", value => (value === "true"));
     const throttled = checkField("env.plugins.pi_support.throttle_state", value => (value.trim() !== "0x0"));
+    const throttle_check_disabled = checkField("env.plugins.pi_support.throttle_check_enabled", value => (value.trim() !== "true"));
     const marlin_bugfix = checkField("printer.firmware", value => (value.includes("Marlin bugfix-")));
     const unrecommended_model = checkField("env.plugins.pi_support.model", value => (checkModel(value)));
     const still_python_2 = checkField("env.python.version", value => (!semver.satisfies(value, ">=3.7")));
@@ -139,6 +140,9 @@ export default function SystemInfo(props) {
     }
     if (throttled) {
         enqueueSnackbar("System is or was throttled, system may behave erratically. Fix before further debugging.", { variant: "error", persist: true, key: "throttled" });
+    }
+    if (throttle_check_disabled) {
+        enqueueSnackbar("Throttle check disabled by user. Potential undervoltage or overheating issues will not be detected.", { variant: "warning", persist: true, key: "throttle_check_disabled" });
     }
     if (marlin_bugfix) {
         enqueueSnackbar("Marlin-Bugfix firmware development build detected, firmware may be unstable.", { key: "marlin_bugfix" });
