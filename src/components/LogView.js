@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -38,9 +38,11 @@ export default function LogView(props) {
 
     const log = props.log;
     const content = props.content;
-    const lines = content.trim().split("\n").map((line) => (line.trimEnd() + "\n"));
-    const lineCount = lines.length;
+    //const lines = content.trim().split("\n").map((line) => (line.trimEnd() + "\n"));
 
+
+    const [lineCount, setLineCount] = useState(0)
+    const [lines, setLines] = useState([]);
     const [query, setQuery] = useState("");
     const [regexMode, setRegexMode] = useState(false);
     const [caseSensitive, setCaseSensitive] = useState(false);
@@ -102,6 +104,28 @@ export default function LogView(props) {
         setQuery("");
     }
 
+    const onPerformFilter = (type) => {
+        let filter = false;
+        if (type === "temperature") {
+            filter = line => line.match(reTemperature);
+        }
+
+        let result = (content.trim().split("\n").map((line) => (line.trimEnd() + "\n")));
+        let filterResult = [];
+        result.forEach( (line) => {
+            if (filter !== false && !filter(line)) {
+                filterResult.push(line);
+            } else if (filter === false) {
+                filterResult.push(line);
+            }
+        })
+
+        setLineCount(filterResult.length);
+        setLines(filterResult)
+    }
+
+    //2022-06-29 17:27:00,639 - Recv: T:31.35/ 190.00 B:31.35/ 60.00 @:64
+    const reTemperature  = /Recv: (T:(.*)\/)/i;
     const onPerformQuery = (q, r, cs) => {
         if (!q) return;
 
@@ -117,9 +141,12 @@ export default function LogView(props) {
                 matcher = line => line.includes(cs ? q : qLower);
             }
 
+
+
+
             const ind = lines.reduce((result, line, index) => {
                 if (matcher(cs ? line : line.toLowerCase())) {
-                    result.push(index);
+                        result.push(index);
                 }
                 return result;
             }, []);
@@ -172,7 +199,15 @@ export default function LogView(props) {
         enqueueSnackbar("System is or was throttled, system may behave erratically. Fix before further debugging.", { variant: "error", persist: true, key: "throttled" });
     }
 
-    return (
+
+        useEffect( () => {
+            let result = (content.trim().split("\n").map((line) => (line.trimEnd() + "\n")));
+            setLines(result);
+            setLineCount(result.length);
+        }, [content,props.content]);
+
+
+        return (
         <Accordion key={log} defaultExpanded={props.expanded}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={"panel-log-" + props.index + "-content"} id={"panel-log-" + props.index + "-header"}>
                 <div className={classes.accordionbar}>
@@ -202,8 +237,11 @@ export default function LogView(props) {
                     onNext={nextResult} 
                     onPrev={previousResult} 
                     onCancel={onCancelQuery}
-                    handlePerformQuery={onPerformQuery} 
+                    handlePerformQuery={onPerformQuery}
+                    handlePerformFilter={onPerformFilter}
+                    logName={log}
                 />
+
                 <LogLines lines={lines} highlighted={indices} scrollTo={scrollTo} language={props.language || guessLanguage(log)} />
             </AccordionDetails>
         </Accordion>
