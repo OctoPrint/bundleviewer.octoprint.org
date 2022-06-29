@@ -124,9 +124,13 @@ export default function SystemInfo(props) {
         enqueueSnackbar(`Last start in safe mode was ${formattedDiff} before bundle creation.`, { key: "last_safe_mode", variant: "info", persist: true });
     }
 
-    const safemode = checkField("octoprint.safe_mode", value => (value === "true"));
+    const checkBoolean = (value) => {
+        return value.toLowerCase().trim() === "true"
+    }
+
+    const safemode = checkField("octoprint.safe_mode", value => checkBoolean(value));
     const throttled = checkField("env.plugins.pi_support.throttle_state", value => (value.trim() !== "0x0"));
-    const throttle_check_disabled = checkField("env.plugins.pi_support.throttle_check_enabled", value => (value.trim() !== "true"));
+    const throttle_check_disabled = checkField("env.plugins.pi_support.throttle_check_enabled", value => !checkBoolean(value));
     const marlin_bugfix = checkField("printer.firmware", value => (value.includes("Marlin bugfix-")));
     const unrecommended_model = checkField("env.plugins.pi_support.model", value => (checkModel(value)));
     const still_python_2 = checkField("env.python.version", value => (!semver.satisfies(value, ">=3.7")));
