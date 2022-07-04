@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import { FixedSizeList } from "react-window";
 
@@ -9,12 +9,22 @@ export default function LogLines(props) {
 
     const scrollTo = props.scrollTo;
 
+    const [maxLengthLine, setMaxLength] = useState(0)
+
     const listRef = React.createRef();
+
     useEffect(() => {
         if (scrollTo > -1) {
             listRef.current?.scrollToItem(scrollTo, "center");
         }
+
+
     }, [listRef, scrollTo]);
+
+    useEffect( () => {
+        let longest = Math.max(...(lines.map(el => el.length)));
+        setMaxLength(longest)
+    }, [props.lines])
 
     const classes = makeStyles(theme => ({
         log: {
@@ -28,12 +38,14 @@ export default function LogLines(props) {
             }
         },
         linewrap: {
+            width:  `${maxLengthLine}ch !important`,
             "&[data-matched=\"true\"]": {
                 "background-color": "rgba(255, 255, 0, .2)"
             }
         },
         line: {
             paddingLeft: theme.spacing(1),
+
             "&::before": {
                 content: "attr(data-linenumber)",
                 display: "inline-block",
@@ -123,15 +135,14 @@ export default function LogLines(props) {
             break;
         }
     }
-
     return (
-        <code className={classes.log}>
+       <code className={classes.log}>
             <pre className={classes.pre}>
-                <FixedSizeList 
+                <FixedSizeList
                     height={500}
                     itemCount={lineCount}
                     itemSize={20}
-                    style={{overflow: "scroll"}}
+                    style={{overflow: "scroll", width:"100%"}}
                     ref={listRef}
                 >
                     {Line}
