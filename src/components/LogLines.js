@@ -142,7 +142,7 @@ export default function LogLines(props) {
                     height={500}
                     itemCount={lineCount}
                     itemSize={20}
-                    style={{overflow: "scroll", width:"100%"}}
+                    style={{overflow: "scroll"}}
                     ref={listRef}
                 >
                     {Line}
