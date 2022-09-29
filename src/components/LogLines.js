@@ -1,15 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import { FixedSizeList } from "react-window";
 
 export default function LogLines(props) {
     const lines = props.lines;
+    const maxLength = lines.reduce((s, t) => (t.length > s.length ? t : s), "").length;
     const lineCount = lines.length;
     const highlighted = props.highlighted;
 
     const scrollTo = props.scrollTo;
-
-    const [maxLengthLine, setMaxLength] = useState(0)
 
     const listRef = React.createRef();
 
@@ -17,14 +16,7 @@ export default function LogLines(props) {
         if (scrollTo > -1) {
             listRef.current?.scrollToItem(scrollTo, "center");
         }
-
-
     }, [listRef, scrollTo]);
-
-    useEffect( () => {
-        let longest = Math.max(...(lines.map(el => el.length)));
-        setMaxLength(longest)
-    }, [props.lines])
 
     const classes = makeStyles(theme => ({
         log: {
@@ -38,7 +30,7 @@ export default function LogLines(props) {
             }
         },
         linewrap: {
-            width:  `${maxLengthLine}ch !important`,
+            width:  `${maxLength}ch !important`,
             "&[data-matched=\"true\"]": {
                 "background-color": "rgba(255, 255, 0, .2)"
             }
