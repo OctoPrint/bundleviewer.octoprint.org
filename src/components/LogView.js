@@ -23,7 +23,23 @@ const languages = [
             {
                 title: "Temperature messages", 
                 pattern: /(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+([PBN]\d+\s+)*)?([BCLPR]|T\d*):-?\d+)/
-            } 
+            },
+            {
+                title: "SD status messages",
+                pattern: /(Send: (N\d+\s+)?M27)|(Recv: SD printing byte)|(Recv: Not SD printing)/
+            },
+            {
+                title: "Position messages",
+                pattern: /(Send:\s+(N\d+\s+)?M114)|(Recv:\s+(ok\s+)?X:[+-]?([0-9]*[.])?[0-9]+\s+Y:[+-]?([0-9]*[.])?[0-9]+\s+Z:[+-]?([0-9]*[.])?[0-9]+\s+E\d*:[+-]?([0-9]*[.])?[0-9]+).*/
+            },
+            {
+                title: "Wait responses",
+                pattern: /Recv:\s+wait/
+            },
+            {
+                title: "Processing responses",
+                pattern: /Recv: (echo:\s*)?busy:\s*processing/
+            }
         ] 
     },
     { 
