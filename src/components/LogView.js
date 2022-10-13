@@ -18,7 +18,7 @@ import millify from "millify";
 const languages = [
     { 
         language: "serial", 
-        patterns: [/^serial\.log$/], 
+        patterns: [/^serial\.log$/, /^terminal\.txt$/], 
         filters: [ 
             {
                 title: "Temperature messages", 
@@ -40,7 +40,7 @@ const languages = [
                 title: "Processing responses",
                 pattern: /Recv: (echo:\s*)?busy:\s*processing/
             }
-        ] 
+        ]
     },
     { 
         language: "cli", 
