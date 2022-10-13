@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import { FixedSizeList } from "react-window";
 
@@ -7,8 +7,11 @@ export default function LogLines(props) {
     const maxLength = lines.reduce((s, t) => (t.length > s.length ? t : s), "").length;
     const lineCount = lines.length;
     const highlighted = props.highlighted;
+    const filtered = props.filtered;
 
     const scrollTo = props.scrollTo;
+
+    const [displayLines, setDisplayLines] = useState([]);
 
     const listRef = React.createRef();
 
@@ -17,6 +20,25 @@ export default function LogLines(props) {
             listRef.current?.scrollToItem(scrollTo, "center");
         }
     }, [listRef, scrollTo]);
+
+    useEffect(() => {
+        const result = [];
+        let inFiltered = false;
+        for (let i = 0; i < lines.length; i++) {
+            if (filtered.includes(i)) {
+                if (!inFiltered) {
+                    inFiltered = true;
+                    result.push(-1);
+                }
+            } else {
+                if (inFiltered) {
+                    inFiltered = false;
+                }
+                result.push(i);
+            }
+        }
+        setDisplayLines(result);
+    }, [lines, filtered]);
 
     const classes = makeStyles(theme => ({
         log: {
@@ -65,6 +87,18 @@ export default function LogLines(props) {
                 "color": theme.palette.error.main
             },
         },
+        filtered: {
+            paddingLeft: theme.spacing(1),
+            color: theme.palette.text.secondary,
+            "font-style": "italic",
+            "&::before": {
+                content: "''",
+                display: "inline-block",
+                width: `${lineCount.toString().length}ch`,
+                "text-align": "right",
+                "margin-right": "1em",
+            },
+        }
     }))();
 
     const getLoglevel = (line) => {
@@ -108,31 +142,41 @@ export default function LogLines(props) {
         <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
     );
 
-    let Line;
+    let LineComponent;
     switch (props.language) {
         case "log": {
-            Line = LogLine;
+            LineComponent = LogLine;
             break;
         }
         case "cli": {
-            Line = CliLine;
+            LineComponent = CliLine;
             break;
         }
         case "updatelog": {
-            Line = UpdatelogLine;
+            LineComponent = UpdatelogLine;
             break;
         }
         default: {
-            Line = PlainLine;
+            LineComponent = PlainLine;
             break;
         }
     }
+
+    const Line = ({ index, style }) => {
+        const idx = displayLines[index];
+        if (idx === -1) {
+            return <span style={style} className={classes.linewrap}><span className={classes.filtered}>{"[...]"}</span></span>;
+        } else {
+            return <LineComponent index={idx} style={style} />
+        }
+    };
+
     return (
        <code className={classes.log}>
             <pre className={classes.pre}>
                 <FixedSizeList
                     height={500}
-                    itemCount={lineCount}
+                    itemCount={displayLines.length}
                     itemSize={20}
                     style={{overflow: "scroll"}}
                     ref={listRef}

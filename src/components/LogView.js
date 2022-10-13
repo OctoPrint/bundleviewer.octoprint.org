@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -16,9 +16,37 @@ import { useSnackbar } from "notistack";
 import millify from "millify";
 
 const languages = [
-    { language: "cli", patterns: [/^.*_console.*\.log$/]},
-    { language: "updatelog", patterns: [/^.*_update\.log$/] },
-    { language: "log", patterns: [/^.*\.log$/] },
+    { 
+        language: "serial", 
+        patterns: [/^serial\.log$/], 
+        filters: [ 
+            {
+                title: "Temperature messages", 
+                pattern: /(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+([PBN]\d+\s+)*)?([BCLPR]|T\d*):-?\d+)/
+            } 
+        ] 
+    },
+    { 
+        language: "cli", 
+        patterns: [/^.*_console.*\.log$/], 
+        filters: [] 
+    },
+    { 
+        language: "updatelog", 
+        patterns: [/^.*_update\.log$/], 
+        filters: [] 
+    },
+    { 
+        language: "log", 
+        patterns: [/^.*\.log$/], 
+        filters: [ 
+            {
+                title: "DEBUG", pattern: /\sDEBUG\s/
+            }, {
+                title: "INFO", pattern: /\sINFO\s/
+            } 
+        ] 
+    },
 ]
 
 const guessLanguage = (filename) => {
@@ -33,6 +61,15 @@ const guessLanguage = (filename) => {
     return "plain";
 }
 
+const getFilters = (l) => {
+    for (const { language, filters } of languages) {
+        if (l === language) {
+            return filters;
+        }
+    }
+    return [];
+}
+
 export default function LogView(props) {
     const { enqueueSnackbar } = useSnackbar();
 
@@ -40,14 +77,16 @@ export default function LogView(props) {
     const content = props.content;
     const lines = content.trim().split("\n").map((line) => (line.trimEnd() + "\n"));
     const lineCount = lines.length;
+    const language = props.language || guessLanguage(log);
 
     const [query, setQuery] = useState("");
     const [regexMode, setRegexMode] = useState(false);
     const [caseSensitive, setCaseSensitive] = useState(false);
     const [scrollTo, setScrollTo] = useState(0);
-
     const [cursor, setCursor] = useState(0);
-    const [indices, setIndices] = useState([]);
+    const [highlighted, setHighlighted] = useState([]);
+
+    const [filtered, setFiltered] = useState([]);
 
     const classes = makeStyles(theme => ({
         background: {
@@ -97,9 +136,31 @@ export default function LogView(props) {
     }))();
 
     const onCancelQuery = () => {
-        setIndices([]);
+        setHighlighted([]);
         setCursor(0);
         setQuery("");
+    }
+
+    const onPerformFilter = (f) => {
+        console.log("Starting filter:", f);
+        const matcher = (line) => {
+            for (const filter of f) {
+                if (line.match(filter)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        const ind = lines.reduce((result, line, index) => {
+            if (matcher(line)) {
+                result.push(index);
+            }
+            return result;
+        }, []);
+
+        setFiltered(ind);
+        console.log("Filtered:", ind);
     }
 
     const onPerformQuery = (q, r, cs) => {
@@ -119,7 +180,7 @@ export default function LogView(props) {
 
             const ind = lines.reduce((result, line, index) => {
                 if (matcher(cs ? line : line.toLowerCase())) {
-                    result.push(index);
+                        result.push(index);
                 }
                 return result;
             }, []);
@@ -128,49 +189,55 @@ export default function LogView(props) {
                 setScrollTo(ind[0]);
             }
 
-            setIndices(ind);
+            setHighlighted(ind);
             setCursor(0);
             setQuery(q);
             setRegexMode(r);
             setCaseSensitive(cs);
-            console.log("Indices:", ind, ", cursor:", 0);
+            console.log("Highlighted:", ind, ", cursor:", 0);
         } else {
             nextResult();
         }
     }
 
     const nextResult = () => {
-        if (indices.length) {
-            const c = cursor < indices.length - 1 ? cursor + 1 : 0;
-            setScrollTo(indices[c]);
+        if (highlighted.length) {
+            const c = cursor < highlighted.length - 1 ? cursor + 1 : 0;
+            setScrollTo(highlighted[c]);
             setCursor(c);
         }
     };
     const previousResult = () => {
-        if (indices.length) {
-            const c = cursor > 0 ? (cursor - 1) : (indices.length - 1);
-            setScrollTo(indices[c]);
+        if (highlighted.length) {
+            const c = cursor > 0 ? (cursor - 1) : (highlighted.length - 1);
+            setScrollTo(highlighted[c]);
             setCursor(c);
         }
     };
 
-    const serialAndDisabled = (log === "serial.log" && lines.filter(line => line.trim() && !line.includes("serial.log is currently not enabled")).length === 0);
-    const undervoltage = content.includes("!!! UNDERVOLTAGE REPORTED !!!");
-    const overheating = content.includes("!!! FREQUENCY CAPPING DUE TO OVERHEATING REPORTED !!!");
-    const throttled = undervoltage || overheating;
+    const [serialAndDisabled, setSerialAndDisabled] = useState(false);
+    const [throttled, setThrottled] = useState(false);
 
-    const piSupportLines = lines.filter(line => line.includes("|  Pi Support Plugin") || line.includes("| !Pi Support Plugin"));
-    const piSupportDisabled = piSupportLines.length && piSupportLines[piSupportLines.length - 1].includes("| !Pi Support Plugin");
+    useEffect(() => {
+        setSerialAndDisabled((log === "serial.log" && lines.filter(line => line.trim() && !line.includes("serial.log is currently not enabled")).length === 0));
 
-    if (serialAndDisabled) {
-        enqueueSnackbar("Serial log is currently not enabled. Should be enabled when reporting issues with the printer.", { variant: "info" });
-    }
-    if (piSupportDisabled) {
-        enqueueSnackbar("Pi Support Plugin disabled in the log, there might be an undetected undervoltage or overheating situation!", { variant: "error", persist: true, key: "pi_support_disabled" });
-    }
-    if (throttled) {
-        enqueueSnackbar("System is or was throttled, system may behave erratically. Fix before further debugging.", { variant: "error", persist: true, key: "throttled" });
-    }
+        const undervoltage = content.includes("!!! UNDERVOLTAGE REPORTED !!!");
+        const overheating = content.includes("!!! FREQUENCY CAPPING DUE TO OVERHEATING REPORTED !!!");
+        setThrottled(undervoltage || overheating);
+    
+        const piSupportLines = lines.filter(line => line.includes("|  Pi Support Plugin") || line.includes("| !Pi Support Plugin"));
+        const piSupportDisabled = piSupportLines.length && piSupportLines[piSupportLines.length - 1].includes("| !Pi Support Plugin");
+    
+        if (serialAndDisabled) {
+            enqueueSnackbar("Serial log is currently not enabled. Should be enabled when reporting issues with the printer.", { variant: "info" });
+        }
+        if (piSupportDisabled) {
+            enqueueSnackbar("Pi Support Plugin disabled in the log, there might be an undetected undervoltage or overheating situation!", { variant: "error", persist: true, key: "pi_support_disabled" });
+        }
+        if (throttled) {
+            enqueueSnackbar("System is or was throttled, system may behave erratically. Fix before further debugging.", { variant: "error", persist: true, key: "throttled" });
+        }
+    }, [log, lines, content, enqueueSnackbar, serialAndDisabled, throttled]);
 
     return (
         <Accordion key={log} defaultExpanded={props.expanded}>
@@ -197,14 +264,17 @@ export default function LogView(props) {
                 <SearchBar 
                     className={classes.grow} 
                     pos={cursor + 1} 
-                    count={indices.length} 
+                    count={highlighted.length} 
                     regexMode={regexMode}
                     onNext={nextResult} 
                     onPrev={previousResult} 
                     onCancel={onCancelQuery}
-                    handlePerformQuery={onPerformQuery} 
+                    handlePerformQuery={onPerformQuery}
+                    handlePerformFilter={onPerformFilter}
+                    filters={getFilters(language)}
                 />
-                <LogLines lines={lines} highlighted={indices} scrollTo={scrollTo} language={props.language || guessLanguage(log)} />
+
+                <LogLines lines={lines} highlighted={highlighted} filtered={filtered} scrollTo={scrollTo} language={language} />
             </AccordionDetails>
         </Accordion>
     )
