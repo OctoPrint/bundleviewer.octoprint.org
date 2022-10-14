@@ -124,18 +124,17 @@ export default function SearchBar(props) {
       </InputAdornment>
     )
 
-    const SearchEndAdornment = (props) => {
-        return(
-            <InputAdornment position="end">
-              {count ? <span className={classes.result}>{pos} / {count}</span> : (null)}
-              {filters.length ? <FilterSelector filters={filters} active={activeFilters} handleFilterChange={handleFilterChange} /> : (null)}
-              <Tooltip title="Toggle regular expression mode"><IconButton onClick={handleToggleRegex} color={regexMode ? 'primary' : 'default'} size="small"><RegexIcon /></IconButton></Tooltip>
-              <Tooltip title="Toggle case sensitivity"><IconButton onClick={handleToggleCaseSensitive} color={caseSensitive ? 'primary' : 'default'} size="small"><CaseIcon /></IconButton></Tooltip>
-              <Tooltip title="Scroll to previous match"><span><IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton></span></Tooltip>
-              <Tooltip title="Scroll to next match"><span><IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton></span></Tooltip>
-              <Tooltip title="Delete search query"><span><IconButton onClick={handleCancel} disabled={query === ""} size="small"><CancelIcon /></IconButton></span></Tooltip>
-            </InputAdornment>)
-    }
+    const SearchEndAdornment = () => (
+      <InputAdornment position="end">
+        {count ? <span className={classes.result}>{pos} / {count}</span> : (null)}
+        {filters.length ? <FilterSelector filters={filters} active={activeFilters} handleFilterChange={handleFilterChange} /> : (null)}
+        <Tooltip title="Toggle regular expression mode"><IconButton onClick={handleToggleRegex} color={regexMode ? 'primary' : 'default'} size="small"><RegexIcon /></IconButton></Tooltip>
+        <Tooltip title="Toggle case sensitivity"><IconButton onClick={handleToggleCaseSensitive} color={caseSensitive ? 'primary' : 'default'} size="small"><CaseIcon /></IconButton></Tooltip>
+        <Tooltip title="Scroll to previous match"><span><IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton></span></Tooltip>
+        <Tooltip title="Scroll to next match"><span><IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton></span></Tooltip>
+        <Tooltip title="Delete search query"><span><IconButton onClick={handleCancel} disabled={query === ""} size="small"><CancelIcon /></IconButton></span></Tooltip>
+      </InputAdornment>
+    )
 
     return (
         <div className={classes.query}>
