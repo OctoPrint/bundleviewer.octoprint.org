@@ -92,6 +92,8 @@ export default function SearchBar(props) {
       if (props.onCancel) {
         props.onCancel();
       }
+
+      handleFilterChange();
     }
 
     const handleToggleRegex = () => {
@@ -132,7 +134,7 @@ export default function SearchBar(props) {
         <Tooltip title="Toggle case sensitivity"><IconButton onClick={handleToggleCaseSensitive} color={caseSensitive ? 'primary' : 'default'} size="small"><CaseIcon /></IconButton></Tooltip>
         <Tooltip title="Scroll to previous match"><span><IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton></span></Tooltip>
         <Tooltip title="Scroll to next match"><span><IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton></span></Tooltip>
-        <Tooltip title="Delete search query"><span><IconButton onClick={handleCancel} disabled={query === ""} size="small"><CancelIcon /></IconButton></span></Tooltip>
+        <Tooltip title="Reset query & filters"><span><IconButton onClick={handleCancel} disabled={query === "" && activeFilters.length === 0} size="small"><CancelIcon /></IconButton></span></Tooltip>
       </InputAdornment>
     )
 
