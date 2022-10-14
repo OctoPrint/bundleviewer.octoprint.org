@@ -57,9 +57,9 @@ const languages = [
         patterns: [/^.*\.log$/], 
         filters: [ 
             {
-                title: "DEBUG", pattern: /\sDEBUG\s/
+                title: "DEBUG", pattern: /\s-\sDEBUG\s-\s/
             }, {
-                title: "INFO", pattern: /\sINFO\s/
+                title: "INFO", pattern: /\s-\sINFO\s-\s/
             } 
         ] 
     },
@@ -189,7 +189,8 @@ export default function LogView(props) {
 
             let matcher;
             if (r) {
-                matcher = line => line.match(q);
+                const regex = new RegExp(q, cs ? "g" : "gi");
+                matcher = line => line.match(regex);
             } else {
                 matcher = line => line.includes(cs ? q : qLower);
             }
