@@ -19,7 +19,7 @@ import Link from "@mui/material/Link";
 import { SnackbarProvider } from "notistack";
 
 import CacheBuster from "react-cache-buster";
-import { version } from "../package.json";
+import packageJson from "../package.json";
 
 import DarkModeToggle from "./components/DarkModeToggle";
 import UrlBar from "./components/UrlBar";
@@ -219,7 +219,7 @@ export default function App(props) {
     }
 
     return (
-      <CacheBuster currentVersion={version} isEnabled={isProduction} isVerboseMode={true}>
+      <CacheBuster currentVersion={packageJson.version} isEnabled={isProduction} isVerboseMode={true}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={darkModeTheme}>
             <SnackbarProvider

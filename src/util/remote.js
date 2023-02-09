@@ -1,4 +1,4 @@
-import contentdispositionutils from "content-disposition";
+import { parse } from "content-disposition-header";
 
 async function loadRemote(url) {
     const response = await fetch(url, {mode: 'cors',});
@@ -10,7 +10,7 @@ async function loadRemote(url) {
     let filename;
     const header = response.headers.get("content-disposition");
     if (header) {
-        filename = contentdispositionutils.parse(header).parameters?.filename || "unknown";
+        filename = parse(header).parameters?.filename || "unknown";
     } else {
         filename = url.substring(url.lastIndexOf("/") + 1);
     }
