@@ -1,7 +1,7 @@
-import { parse } from "content-disposition-header";
+import {parse} from "content-disposition-header";
 
 async function loadRemote(url) {
-    const response = await fetch(url, {mode: 'cors',});
+    const response = await fetch(url, {mode: "cors"});
     if (!response.ok) {
         throw new Error(`Could not load file from ${url}: ${response.status}`);
     }
@@ -15,11 +15,11 @@ async function loadRemote(url) {
         filename = url.substring(url.lastIndexOf("/") + 1);
     }
     blob.name = filename;
-    
+
     return blob;
 }
 
 const utils = {
     loadRemote: loadRemote
-}
+};
 export default utils;

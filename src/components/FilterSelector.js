@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 import Tooltip from "@mui/material/Tooltip";
 import Select from "@mui/material/Select";
@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import CheckBox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 
-import FilterIcon from "mdi-material-ui/Filter"
+import FilterIcon from "mdi-material-ui/Filter";
 
 export default function FilterSelector(props) {
     const filters = props.filters;
@@ -32,14 +32,22 @@ export default function FilterSelector(props) {
             }
             return event.target.value;
         });
-    }
+    };
 
     console.log("Filters:", filters);
     console.log("Active filters:", activeFilters);
 
     return (
         <>
-            <Tooltip title="Filters"><IconButton onClick={handleOpen} color={activeFilters.length ? 'primary' : 'default'} size="small"><FilterIcon /></IconButton></Tooltip>
+            <Tooltip title="Filters">
+                <IconButton
+                    onClick={handleOpen}
+                    color={activeFilters.length ? "primary" : "default"}
+                    size="small"
+                >
+                    <FilterIcon />
+                </IconButton>
+            </Tooltip>
             <Select
                 multiple
                 value={activeFilters}
@@ -53,11 +61,17 @@ export default function FilterSelector(props) {
             >
                 {filters.map((f, index) => (
                     <MenuItem key={index} value={f.pattern}>
-                        <CheckBox checked={!!activeFilters.find(element => element.source === f.pattern.source)} />
+                        <CheckBox
+                            checked={
+                                !!activeFilters.find(
+                                    (element) => element.source === f.pattern.source
+                                )
+                            }
+                        />
                         <ListItemText primary={f.title} />
                     </MenuItem>
                 ))}
             </Select>
         </>
-    )
+    );
 }

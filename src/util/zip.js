@@ -1,8 +1,8 @@
 import JSZip from "jszip";
-import remoteutils from "./remote"
+import remoteutils from "./remote";
 
 async function loadRemoteZip(url) {
-    const { blob } = await remoteutils.loadRemote(url);
+    const {blob} = await remoteutils.loadRemote(url);
     return await loadZip(blob);
 }
 
@@ -24,6 +24,6 @@ const utils = {
     loadRemoteZip: loadRemoteZip,
     containsFile: containsFile,
     getFileContents: getFileContents
-}
+};
 
 export default utils;

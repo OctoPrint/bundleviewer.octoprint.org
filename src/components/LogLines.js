@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import makeStyles from '@mui/styles/makeStyles';
-import { FixedSizeList } from "react-window";
+import React, {useEffect, useState} from "react";
+import makeStyles from "@mui/styles/makeStyles";
+import {FixedSizeList} from "react-window";
 
 export default function LogLines(props) {
     const lines = props.lines;
@@ -40,81 +40,85 @@ export default function LogLines(props) {
         setDisplayLines(result);
     }, [lines, filtered]);
 
-    const classes = makeStyles(theme => ({
+    const classes = makeStyles((theme) => ({
         log: {
-            flexGrow: 1,
+            flexGrow: 1
         },
         pre: {
-            margin: 0,
+            "margin": 0,
             "font-family": "'JetBrains Mono', 'Droid Sans Mono', monospace",
-            [theme.breakpoints.down('lg')]: {
-                fontSize: theme.typography.pxToRem(12),
+            [theme.breakpoints.down("lg")]: {
+                fontSize: theme.typography.pxToRem(12)
             }
         },
         linewrap: {
-            width:  `${maxLength}ch !important`,
-            "&[data-matched=\"true\"]": {
+            "width": `${maxLength}ch !important`,
+            '&[data-matched="true"]': {
                 "background-color": "rgba(255, 255, 0, .2)"
             }
         },
         line: {
-            paddingLeft: theme.spacing(1),
+            "paddingLeft": theme.spacing(1),
 
             "&::before": {
-                content: "attr(data-linenumber)",
-                display: "inline-block",
-                width: `${lineCount.toString().length}ch`,
+                "content": "attr(data-linenumber)",
+                "display": "inline-block",
+                "width": `${lineCount.toString().length}ch`,
                 "text-align": "right",
                 "margin-right": "1em",
                 "color": theme.palette.text.disabled
             },
-            "&[data-loglevel=\"DEBUG\"]": {
-                "color": theme.palette.text.secondary
+            '&[data-loglevel="DEBUG"]': {
+                color: theme.palette.text.secondary
             },
-            "&[data-loglevel=\"WARNING\"]": {
-                "color": theme.palette.warning.main
+            '&[data-loglevel="WARNING"]': {
+                color: theme.palette.warning.main
             },
-            "&[data-loglevel=\"ERROR\"]": {
-                "color": theme.palette.error.main
+            '&[data-loglevel="ERROR"]': {
+                color: theme.palette.error.main
             },
-            "&[data-stream=\"stdin\"]": {
-                "color": theme.palette.info.main
+            '&[data-stream="stdin"]': {
+                color: theme.palette.info.main
             },
-            "&[data-stream=\"stderr\"]": {
-                "color": theme.palette.error.main
+            '&[data-stream="stderr"]': {
+                color: theme.palette.error.main
             },
-            "&[data-updateresult=\"FAILED\"]": {
-                "color": theme.palette.error.main
-            },
+            '&[data-updateresult="FAILED"]': {
+                color: theme.palette.error.main
+            }
         },
         filtered: {
-            paddingLeft: theme.spacing(1),
-            color: theme.palette.text.secondary,
+            "paddingLeft": theme.spacing(1),
+            "color": theme.palette.text.secondary,
             "font-style": "italic",
             "&::before": {
-                content: "''",
-                display: "inline-block",
-                width: `${lineCount.toString().length}ch`,
+                "content": "''",
+                "display": "inline-block",
+                "width": `${lineCount.toString().length}ch`,
                 "text-align": "right",
-                "margin-right": "1em",
-            },
+                "margin-right": "1em"
+            }
         }
     }))();
 
     const getLoglevel = (line) => {
         let parts = line.split(" ");
         return parts[5];
-    }
+    };
 
     const getStream = (line) => {
         const prefix = line.charAt(24);
         switch (prefix) {
-            case " ": return "stdin";
-            case ">": return "stdout";
-            case "!": return "stderr";
-            default: return "plain";
+            case " ":
+                return "stdin";
+            case ">":
+                return "stdout";
+            case "!":
+                return "stderr";
+            default:
+                return "plain";
         }
-    }
+    };
 
     const getUpdateResult = (line) => {
         if (line.includes("- FAILED -")) {
@@ -124,22 +128,66 @@ export default function LogLines(props) {
         } else {
             return "PLAIN";
         }
-    }
+    };
 
-    const LogLine = ({ index, style }) => (
-        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-loglevel={getLoglevel(lines[index])} className={classes.line}>{lines[index]}</span></span>
+    const LogLine = ({index, style}) => (
+        <span
+            data-matched={highlighted.includes(index)}
+            style={style}
+            className={classes.linewrap}
+        >
+            <span
+                data-linenumber={index + 1}
+                data-loglevel={getLoglevel(lines[index])}
+                className={classes.line}
+            >
+                {lines[index]}
+            </span>
+        </span>
     );
 
-    const CliLine = ({ index, style }) => (
-        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-stream={getStream(lines[index])} className={classes.line}>{lines[index]}</span></span>
+    const CliLine = ({index, style}) => (
+        <span
+            data-matched={highlighted.includes(index)}
+            style={style}
+            className={classes.linewrap}
+        >
+            <span
+                data-linenumber={index + 1}
+                data-stream={getStream(lines[index])}
+                className={classes.line}
+            >
+                {lines[index]}
+            </span>
+        </span>
     );
 
-    const UpdatelogLine = ({ index, style }) => (
-        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} data-updateresult={getUpdateResult(lines[index])} className={classes.line}>{lines[index]}</span></span>
+    const UpdatelogLine = ({index, style}) => (
+        <span
+            data-matched={highlighted.includes(index)}
+            style={style}
+            className={classes.linewrap}
+        >
+            <span
+                data-linenumber={index + 1}
+                data-updateresult={getUpdateResult(lines[index])}
+                className={classes.line}
+            >
+                {lines[index]}
+            </span>
+        </span>
     );
 
-    const PlainLine = ({ index, style }) => (
-        <span data-matched={highlighted.includes(index)} style={style} className={classes.linewrap}><span data-linenumber={index + 1} className={classes.line}>{lines[index]}</span></span>
+    const PlainLine = ({index, style}) => (
+        <span
+            data-matched={highlighted.includes(index)}
+            style={style}
+            className={classes.linewrap}
+        >
+            <span data-linenumber={index + 1} className={classes.line}>
+                {lines[index]}
+            </span>
+        </span>
     );
 
     let LineComponent;
@@ -162,17 +210,21 @@ export default function LogLines(props) {
         }
     }
 
-    const Line = ({ index, style }) => {
+    const Line = ({index, style}) => {
         const idx = displayLines[index];
         if (idx === -1) {
-            return <span style={style} className={classes.linewrap}><span className={classes.filtered}>{"[...]"}</span></span>;
+            return (
+                <span style={style} className={classes.linewrap}>
+                    <span className={classes.filtered}>{"[...]"}</span>
+                </span>
+            );
         } else {
-            return <LineComponent index={idx} style={style} />
+            return <LineComponent index={idx} style={style} />;
         }
     };
 
     return (
-       <code className={classes.log}>
+        <code className={classes.log}>
             <pre className={classes.pre}>
                 <FixedSizeList
                     height={500}
@@ -185,5 +237,5 @@ export default function LogLines(props) {
                 </FixedSizeList>
             </pre>
         </code>
-    )
-};
+    );
+}

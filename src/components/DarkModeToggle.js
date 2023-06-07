@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -16,7 +16,7 @@ export default function DarkModeToggle(props) {
     return (
         <Tooltip title="Toggle dark mode">
             <IconButton onClick={handleDarkModeToggle} color="inherit" size="large">
-                { darkMode ? <LightModeIcon /> : <DarkModeIcon /> }
+                {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
         </Tooltip>
     );

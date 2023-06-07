@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
-import { alpha } from "@mui/material/styles";
-import makeStyles from '@mui/styles/makeStyles';
+import {alpha} from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import SearchIcon from "@mui/icons-material/Search";
 import PrevIcon from "@mui/icons-material/ExpandLess";
 import NextIcon from "@mui/icons-material/ExpandMore";
@@ -16,40 +16,39 @@ import CaseIcon from "mdi-material-ui/FormatLetterCase";
 
 import FilterSelector from "./FilterSelector";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     grow: {
-      flexGrow: 1
+        flexGrow: 1
     },
     query: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: alpha(theme.palette.common.white, 0.15),
-      "&:hover": {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-      },
-      [theme.breakpoints.up('md')]: {
-        marginRight: theme.spacing(2),
-        marginLeft: theme.spacing(2),
-      },
-      flexGrow: 1,
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
+        "position": "relative",
+        "borderRadius": theme.shape.borderRadius,
+        "backgroundColor": alpha(theme.palette.common.white, 0.15),
+        "&:hover": {
+            backgroundColor: alpha(theme.palette.common.white, 0.25)
+        },
+        [theme.breakpoints.up("md")]: {
+            marginRight: theme.spacing(2),
+            marginLeft: theme.spacing(2)
+        },
+        "flexGrow": 1,
+        "marginTop": theme.spacing(2),
+        "marginBottom": theme.spacing(2)
     },
     inputRoot: {
-      color: "inherit",
-      width: "100%"
+        color: "inherit",
+        width: "100%"
     },
     inputInput: {
-      padding: theme.spacing(1),
-      transition: theme.transitions.create('width'),
-      width: "100%",
+        padding: theme.spacing(1),
+        transition: theme.transitions.create("width"),
+        width: "100%"
     },
     result: {
-      color: theme.palette.secondary,
-      fontSize: theme.typography.pxToRem(12),
+        color: theme.palette.secondary,
+        fontSize: theme.typography.pxToRem(12)
     }
 }));
-
 
 export default function SearchBar(props) {
     const pos = props.pos;
@@ -68,75 +67,141 @@ export default function SearchBar(props) {
     const inputRef = React.createRef();
 
     const handleChange = (event) => {
-      setQuery(event.target.value);
-      if (props.handleQueryChange) {
-        props.handleQueryChange(query);
-      }
-    }
+        setQuery(event.target.value);
+        if (props.handleQueryChange) {
+            props.handleQueryChange(query);
+        }
+    };
 
     const handleKeyDown = (event) => {
-      if (event.key === "Enter") {
-        handlePerform();
-      }
-    }
+        if (event.key === "Enter") {
+            handlePerform();
+        }
+    };
 
     const handlePerform = () => {
-      if (handlePerformQuery) {
-        handlePerformQuery(query, regexMode, caseSensitive);
-      }
-    }
+        if (handlePerformQuery) {
+            handlePerformQuery(query, regexMode, caseSensitive);
+        }
+    };
 
     const handleCancel = () => {
-      setQuery("");
-      inputRef.current.value = "";
-      if (props.onCancel) {
-        props.onCancel();
-      }
+        setQuery("");
+        inputRef.current.value = "";
+        if (props.onCancel) {
+            props.onCancel();
+        }
 
-      handleFilterChange();
-    }
+        handleFilterChange();
+    };
 
     const handleToggleRegex = () => {
-      setRegexMode(regexMode => {
-        const result = !regexMode;
-        handlePerformQuery(query, result, caseSensitive);
-        return result;
-      });
-    }
+        setRegexMode((regexMode) => {
+            const result = !regexMode;
+            handlePerformQuery(query, result, caseSensitive);
+            return result;
+        });
+    };
 
     const handleToggleCaseSensitive = () => {
-      setCaseSensitive(caseSensitive => {
-        const result = !caseSensitive;
-        handlePerformQuery(query, regexMode, result);
-        return result;
-      });
-    }
+        setCaseSensitive((caseSensitive) => {
+            const result = !caseSensitive;
+            handlePerformQuery(query, regexMode, result);
+            return result;
+        });
+    };
 
     const handleFilterChange = (f) => {
-      f = f || [];
-      setActiveFilters(f);
-      if (handlePerformFilter) {
-        handlePerformFilter(f);
-      }
-    }
+        f = f || [];
+        setActiveFilters(f);
+        if (handlePerformFilter) {
+            handlePerformFilter(f);
+        }
+    };
 
     const SearchStartAdornment = () => (
-      <InputAdornment position="start">
-        <Tooltip title="Search"><span><IconButton onClick={handlePerform} disabled={query === ""} size="small"><SearchIcon /></IconButton></span></Tooltip>
-      </InputAdornment>
-    )
+        <InputAdornment position="start">
+            <Tooltip title="Search">
+                <span>
+                    <IconButton
+                        onClick={handlePerform}
+                        disabled={query === ""}
+                        size="small"
+                    >
+                        <SearchIcon />
+                    </IconButton>
+                </span>
+            </Tooltip>
+        </InputAdornment>
+    );
 
     const SearchEndAdornment = () => (
-      <InputAdornment position="end">
-        {count ? <span className={classes.result}>{pos} / {count}</span> : (null)}
-        {filters.length ? <FilterSelector filters={filters} active={activeFilters} handleFilterChange={handleFilterChange} /> : (null)}
-        <Tooltip title="Toggle regular expression mode"><IconButton onClick={handleToggleRegex} color={regexMode ? 'primary' : 'default'} size="small"><RegexIcon /></IconButton></Tooltip>
-        <Tooltip title="Toggle case sensitivity"><IconButton onClick={handleToggleCaseSensitive} color={caseSensitive ? 'primary' : 'default'} size="small"><CaseIcon /></IconButton></Tooltip>
-        <Tooltip title="Scroll to previous match"><span><IconButton onClick={props.onPrev} disabled={count === 0} size="small"><PrevIcon /></IconButton></span></Tooltip>
-        <Tooltip title="Scroll to next match"><span><IconButton onClick={props.onNext} disabled={count === 0} size="small"><NextIcon /></IconButton></span></Tooltip>
-        <Tooltip title="Reset query & filters"><span><IconButton onClick={handleCancel} disabled={query === "" && activeFilters.length === 0} size="small"><CancelIcon /></IconButton></span></Tooltip>
-      </InputAdornment>
-    )
+        <InputAdornment position="end">
+            {count ? (
+                <span className={classes.result}>
+                    {pos} / {count}
+                </span>
+            ) : null}
+            {filters.length ? (
+                <FilterSelector
+                    filters={filters}
+                    active={activeFilters}
+                    handleFilterChange={handleFilterChange}
+                />
+            ) : null}
+            <Tooltip title="Toggle regular expression mode">
+                <IconButton
+                    onClick={handleToggleRegex}
+                    color={regexMode ? "primary" : "default"}
+                    size="small"
+                >
+                    <RegexIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Toggle case sensitivity">
+                <IconButton
+                    onClick={handleToggleCaseSensitive}
+                    color={caseSensitive ? "primary" : "default"}
+                    size="small"
+                >
+                    <CaseIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Scroll to previous match">
+                <span>
+                    <IconButton
+                        onClick={props.onPrev}
+                        disabled={count === 0}
+                        size="small"
+                    >
+                        <PrevIcon />
+                    </IconButton>
+                </span>
+            </Tooltip>
+            <Tooltip title="Scroll to next match">
+                <span>
+                    <IconButton
+                        onClick={props.onNext}
+                        disabled={count === 0}
+                        size="small"
+                    >
+                        <NextIcon />
+                    </IconButton>
+                </span>
+            </Tooltip>
+            <Tooltip title="Reset query & filters">
+                <span>
+                    <IconButton
+                        onClick={handleCancel}
+                        disabled={query === "" && activeFilters.length === 0}
+                        size="small"
+                    >
+                        <CancelIcon />
+                    </IconButton>
+                </span>
+            </Tooltip>
+        </InputAdornment>
+    );
 
     return (
         <div className={classes.query}>
@@ -144,7 +209,7 @@ export default function SearchBar(props) {
                 placeholder="Search..."
                 classes={{
                     root: classes.inputRoot,
-                    input: classes.inputInput,
+                    input: classes.inputInput
                 }}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
@@ -154,5 +219,5 @@ export default function SearchBar(props) {
                 inputRef={inputRef}
             />
         </div>
-    )
+    );
 }
