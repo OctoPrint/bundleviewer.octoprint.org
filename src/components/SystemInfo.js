@@ -142,6 +142,14 @@ export default function SystemInfo(props) {
         return value.toLowerCase().trim() === "true";
     };
 
+    const semverify = (value) => {
+        var parts = value.split(".");
+        while (parts.length < 3) {
+            parts.push("0");
+        }
+        return parts.join(".");
+    };
+
     const safemode = checkField("octoprint.safe_mode", (value) => checkBoolean(value));
     const throttled = checkField(
         "env.plugins.pi_support.throttle_state",
@@ -163,19 +171,21 @@ export default function SystemInfo(props) {
     );
     const python_too_old = checkField(
         "env.python.version",
-        (value) => !semver.satisfies(value, ">=2.7.13 <3 || >=3.7")
+        (value) => !semver.satisfies(semverify(value), ">=2.7.13 <3 || >=3.7")
     );
     const pip_too_old = checkField(
         "env.python.pip",
-        (value) => !semver.satisfies(value, ">=19.0.1")
+        (value) => !semver.satisfies(semverify(value), ">=19.0.1")
     );
     const setuptools_too_old = checkField(
         "env.python.setuptools",
-        (value) => !semver.satisfies(value, ">=40.7.1")
+        (value) => !semver.satisfies(semverify(value), ">=40.7.1")
     );
     const issue_4392 =
         checkField("octoprint.version", (value) => semver.satisfies(value, "<1.8.0")) &&
-        checkField("env.python.pip", (value) => semver.satisfies(value, ">=22"));
+        checkField("env.python.pip", (value) =>
+            semver.satisfies(semverify(value), ">=22")
+        );
 
     if (safemode) {
         enqueueSnackbar("Safe mode enabled.", {key: "safemode"});
