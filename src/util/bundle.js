@@ -1,13 +1,7 @@
 import ziputils from "./zip";
 
 async function loadBundle(zip) {
-    const files = [
-        "octoprint.log",
-        "serial.log",
-        "terminal.txt",
-        "plugin_softwareupdate_console.log",
-        "plugin_pluginmanager_console.log"
-    ];
+    const files = ["octoprint.log"];
 
     let systeminfo = false;
     try {
