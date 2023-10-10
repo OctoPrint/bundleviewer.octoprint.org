@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import ThrottledIcon from "mdi-react/SpeedometerSlowIcon";
 import BugfixIcon from "mdi-react/BugCheckIcon";
 import SafeModeIcon from "mdi-react/LockCheckIcon";
+import CameraIcon from "mdi-react/CameraIcon";
 
 import {useSnackbar} from "notistack";
 
@@ -78,13 +79,16 @@ export default function SystemInfo(props) {
 
     const classes = useStyles();
 
-    const InfoField = (title, key) => {
+    const InfoField = (title, key, render) => {
         const value = info[key];
+        if (!render) {
+            render = (value) => title + " " + value;
+        }
 
         if (value) {
             return (
                 <Typography className={classes.secondaryHeading}>
-                    {title + " " + value}
+                    {render(value)}
                 </Typography>
             );
         } else {
@@ -186,6 +190,29 @@ export default function SystemInfo(props) {
         checkField("env.python.pip", (value) =>
             semver.satisfies(semverify(value), ">=22")
         );
+    const camera_stack = checkField(
+        "env.plugins.pi_support.octopi_camera_stack",
+        (value) => value
+    );
+    const is_new_camera_stack = camera_stack && camera_stack.trim() === "camera-streamer";
+
+    const full_octopi_version = (() => {
+        if (info["env.plugins.pi_support.octopi_version"]) {
+            const octopi_version = info["env.plugins.pi_support.octopi_version"].trim();
+            const octopi_uptodate_build =
+                info["env.plugins.pi_support.octopiuptodate_build_short"] || false;
+            return (
+                "OctoPi" +
+                (octopi_uptodate_build ? "*" : "") +
+                " " +
+                octopi_version +
+                (is_new_camera_stack ? "cam" : "") +
+                (octopi_uptodate_build ? ` (build ${octopi_uptodate_build.trim()})` : "")
+            );
+        } else {
+            return "";
+        }
+    })();
 
     if (safemode) {
         enqueueSnackbar("Safe mode enabled.", {key: "safemode"});
@@ -248,6 +275,11 @@ export default function SystemInfo(props) {
             key: "issue_4392"
         });
     }
+    if (camera_stack) {
+        enqueueSnackbar(`Camera stack is based on ${camera_stack}.`, {
+            key: "camera_stack"
+        });
+    }
     checkLastSafeMode();
 
     return (
@@ -273,12 +305,19 @@ export default function SystemInfo(props) {
                             {marlin_bugfix ? (
                                 <BugfixIcon className={classes.icon} size="1.5em" />
                             ) : null}
+                            {is_new_camera_stack ? (
+                                <CameraIcon className={classes.icon} size="1.5em" />
+                            ) : null}
                         </Typography>
                     </div>
                     <div className={classes.info}>
                         {InfoField("OctoPrint", "octoprint.version")}
                         {InfoField("Python", "env.python.version")}
-                        {InfoField("OctoPi", "env.plugins.pi_support.octopi_version")}
+                        {InfoField(
+                            "OctoPi",
+                            "env.plugins.pi_support.octopi_version",
+                            (value) => full_octopi_version
+                        )}
                         {InfoField("Firmware", "printer.firmware")}
                     </div>
                 </div>
