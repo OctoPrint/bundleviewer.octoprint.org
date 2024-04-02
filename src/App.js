@@ -288,6 +288,8 @@ function Main({
 }) {
     const classes = useStyles();
 
+    const currentYear = new Date().getFullYear();
+
     const MainView = () => {
         if (error) {
             console.log("Rendering error screen");
@@ -354,7 +356,7 @@ function Main({
                 </Container>
             </main>
             <footer className={classes.footer}>
-                © 2021{" "}
+                © 2021-{currentYear}{" "}
                 <Link
                     href="https://octoprint.org"
                     target="_blank"
