@@ -6,6 +6,7 @@ import SystemInfo from "./SystemInfo";
 export default function BundleView(props) {
     return (
         <>
+            {props.bundle.prefix ? <small>Prefix: {props.bundle.prefix}</small> : null}
             {props.bundle.systeminfo ? (
                 <SystemInfo info={props.bundle.systeminfo} />
             ) : null}
