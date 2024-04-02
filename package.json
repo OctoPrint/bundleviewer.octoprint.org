@@ -62,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "icon-gen": "^3.0.1"
   }
 }
