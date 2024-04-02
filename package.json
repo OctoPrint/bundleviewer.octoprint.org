@@ -1,6 +1,6 @@
 {
   "name": "bundleviewer.octoprint.org",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.5.0",
