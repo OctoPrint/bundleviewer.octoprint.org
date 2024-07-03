@@ -40,7 +40,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
  */
 
 /**
- * @mui/material v5.15.14
+ * @mui/material v5.15.21
  *
  * @license MIT
  * This source code is licensed under the MIT license found in the
