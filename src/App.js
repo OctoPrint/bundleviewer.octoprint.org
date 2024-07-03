@@ -91,12 +91,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function corsRewrite(url) {
-    const githubRegex = /^https:\/\/github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/files\//;
+    const githubRegex = /^https:\/\/github\.com\/user-attachments\/files\//;
     const forumRegex = /^https:\/\/community\.octoprint\.org\/uploads\/short-url\//;
+
     if (url.match(githubRegex)) {
         return url.replace(
-            "https://github.com",
-            "https://bundleviewer.octoprint.org/bundles"
+            "https://github.com/user-attachments/files",
+            "https://bundleviewer.octoprint.org/bundles/github"
         );
     } else if (url.match(forumRegex)) {
         return url.replace(
