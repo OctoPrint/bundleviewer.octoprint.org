@@ -6,7 +6,7 @@ object-assign
 
 /*!
 
-JSZip v3.10.1 - A JavaScript class for generating and reading zip files
+JSZip v3.10.2 - A JavaScript class for generating and reading zip files
 <http://stuartk.com/jszip>
 
 (c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
@@ -31,16 +31,16 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
 /**
  * @license React
- * react-is.production.min.js
+ * react-is.production.js
  *
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 /**
- * @mui/material v5.15.21
+ * @mui/material v5.18.0
  *
  * @license MIT
  * This source code is licensed under the MIT license found in the
